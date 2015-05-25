@@ -29,6 +29,7 @@ module.exports = component.register('vr-object', {
     this.orientation = new VR.Euler(0, 0, 0);
     this.setupShadowRoot();
     this.findScene();
+    this.scene.addObject(this);
     this.updateTransform();
   },
 
@@ -71,28 +72,31 @@ module.exports = component.register('vr-object', {
     var y = this.position.y = this.getAttribute('y') || 0;
     var z = this.position.z = this.getAttribute('z') || 0;
 
+    var rotX = VR.Math.degToRad(orientationX);
+    var rotY = VR.Math.degToRad(orientationY);
+
     var translation = new VR.Matrix4().makeTranslation(x, y, this.perspective - z);
-    var rotationY = new VR.Matrix4().makeRotationY(VR.Math.degToRad(orientationY));
-    var rotationX = new VR.Matrix4().makeRotationX(VR.Math.degToRad(orientationX));
+    var rotationY = new VR.Matrix4().makeRotationY(rotY);
+    var rotationX = new VR.Matrix4().makeRotationX(rotX);
     var matrix = new VR.Matrix4();
     this.style.transform = 'translate3d(-50%, -50%, 0) ' + this.getCameraCSSMatrix(translation.multiply(rotationY.multiply(rotationX)));
+    this.object3D.position.set(0, 0, -(this.perspective / 12 + z));
+    this.object3D.rotation.set(-rotX, rotY, 0);
   },
 
   findScene: function() {
     var scenes = document.querySelectorAll('vr-scene');
     var perspective;
     for (var i=0; i < scenes.length; ++i) {
+      this.scene = scenes[i];
       if (scenes[i] === this.parentNode) {
-        this.scene = scenes[i];
         perspective = window.getComputedStyle(this.scene, null).perspective;
         this.perspective = parseInt(perspective.substring(0, perspective.indexOf("px"))) - 1;
-        this.updateTransform();
         return;
       }
     }
 
     this.perspective = 0;
-    this.updateTransform();
 
     function isDescendant(parent, child) {
      var node = child.parentNode;

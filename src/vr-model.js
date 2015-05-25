@@ -28,48 +28,21 @@ module.exports = component.register('vr-model', {
     };
     this.orientation = new VR.Euler(0, 0, 0);
     this.setupShadowRoot();
-    this.initCanvas();
-    this.findScene();
+    this.setupScene();
     this.updateTransform();
   },
 
-  initCanvas: function () {
-    var canvas = this.canvas = this.shadowRoot.querySelector('canvas');
-    // Make it visually fill the positioned parent
-    canvas.style.width ='100%';
-    canvas.style.height='100%';
-    // ...then set the internal size to match
-    canvas.width  = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-    //var ctx = this.context = canvas.getContext('2d');
-    //ctx.fillStyle = "red";
-    //ctx.fillRect(10, 10, 100, 100);
-    this.initRenderer();
-  },
-
-  initRenderer: function() {
-    var camera = this.camera = new THREE.PerspectiveCamera( 70, this.canvas.width / this.canvas.height, 1, 10000 );
-    camera.position.z = 500;
-    var scene = this.scene = new THREE.Scene();
-    var renderer = this.renderer = new THREE.WebGLRenderer( { canvas: this.canvas, antialias: true, alpha: true } );
-    createLights();
-    renderer.setSize( this.canvas.width, this.canvas.height );
-    renderer.sortObjects = false;
-    this.setupScene();
-    renderer.render(scene, camera);
-    function createLights() {
-      var directionalLight = new THREE.DirectionalLight(0xffffff);
-      directionalLight.position.set(1, 1, 1).normalize();
-      scene.add(directionalLight);
-    }
-  },
-
   setupScene: function() {
+    this.findScene();
     var material = new THREE.MeshLambertMaterial({ color: 'magenta' });
-    var model = this.model = new THREE.Mesh(new THREE.BoxGeometry(350, 350, 350), material);
+    var model = this.model = new THREE.Mesh(new THREE.BoxGeometry(120, 120, 120), material);
+    var x = this.getAttribute('x') || 0;
+    var y = this.getAttribute('y') || 0;
+    var z = this.getAttribute('z') || 0;
     model.overdraw = true;
-    model.position.set(0, 0, 0);
-    this.scene.add(model);
+    model.position.set(x, y, z);
+    this.object3D = model;
+    this.scene.addObject(this);
     this.animate();
   },
 
@@ -86,8 +59,6 @@ module.exports = component.register('vr-model', {
     var angleChange = angularSpeed * timeDiff * 2 * Math.PI / 1000;
     self.model.rotation.y += angleChange;
     self.lastTime = time;
-
-    self.renderer.render(self.scene, self.camera);
   },
 
   attributeChanged: function(name, from, to) {
@@ -140,7 +111,7 @@ module.exports = component.register('vr-model', {
     var scenes = document.querySelectorAll('vr-scene');
     var perspective;
     for (var i=0; i < scenes.length; ++i) {
-      if (scenes[i] === this.parentNode) {
+      if (isDescendant(scenes[i], this)) {
         this.scene = scenes[i];
         perspective = window.getComputedStyle(this.scene, null).perspective;
         this.perspective = parseInt(perspective.substring(0, perspective.indexOf("px"))) - 1;
@@ -165,15 +136,10 @@ module.exports = component.register('vr-model', {
   },
 
   template: `
-    <canvas width="100%"></canvas>
+    <canvas width="100%" height="100%"></canvas>
     :host {
       left: 50%;
       top: 50%;
-    }
-
-    :host canvas {
-      margin: 0;
-      padding: 0;
     }
   `
 });
