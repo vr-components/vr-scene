@@ -32,6 +32,12 @@ body {
   padding: 15px;
 }
 
+.hud-model {
+  width: 120px;
+  height: 120px;
+  background-color: transparent;
+}
+
 .hud-button span {
   position: absolute;
   width: 50px;

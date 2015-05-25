@@ -44,7 +44,7 @@ module.exports = component.register('vr-scene', {
       height: 100vh;
     }
 
-    :host vr-object {
+    :host vr-object, vr-model {
       position: absolute;
       transform-style: preserve-3d;
     }
