@@ -70,10 +70,10 @@
       hud.setAttribute('z', value)
     });
     lat.onChange(function(value) {
-      pivot.setAttribute('lat', value)
+      pivot.setAttribute('lat', -value)
     });
     long.onChange(function(value) {
-      pivot.setAttribute('long', value)
+      pivot.setAttribute('long', -value)
     });
     var xObj = {
       x: 0,

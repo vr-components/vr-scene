@@ -94,8 +94,8 @@ module.exports = component.register('vr-scene', {
   },
 
   template: `
-    <content></content>
     <canvas width="100%" height="100%"></canvas>
+    <content></content>
     <style>
 
     :host {
