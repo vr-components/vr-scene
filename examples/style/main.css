@@ -34,6 +34,11 @@ body {
   padding: 15px;
 }
 
+.hud-button:hover {
+  background-color: yellow;
+  color: #0480D1;
+}
+
 .hud-model {
   width: 120px;
   height: 120px;
