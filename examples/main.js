@@ -1,0 +1,1 @@
+window.VR = window.VR || {};

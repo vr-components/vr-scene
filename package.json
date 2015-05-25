@@ -1,0 +1,33 @@
+{
+  "name": "vr-cube",
+  "homepage": "https://github.com/vr-components/vr-cube",
+  "license": "ISC",
+  "main": "script.js",
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "devDependencies": {
+    "bower": "^1.3.5",
+    "browserify": "^4.1.11",
+    "vr-test": "git://github.com/vr-components/vr-cube"
+  },
+  "scripts": {
+    "test": "gaia-test-lint && gaia-test-unit && gaia-test-integration",
+    "test-unit": "gaia-test-unit",
+    "test-integration": "gaia-test-integration",
+    "test-lint": "gaia-test-lint .",
+    "install": "bower install",
+    "build": "mkdir -p dist && browserify script.js --outfile ./dist/script.js --standalone VRCUBE"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/vr-components/vr-cube.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gaia-components/vr-cube/issues"
+  },
+  "browser": {
+    "gaia-icons": "./bower_components/threejs/build/three.min.js"
+  }
+}

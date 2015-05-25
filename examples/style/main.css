@@ -1,0 +1,46 @@
+html {
+  overflow: hidden;
+}
+
+body {
+  background-image:
+  radial-gradient(
+      #0B6790,
+      #14364A
+    );
+}
+
+/*body:after {
+ -moz-box-shadow: inset 0 0 10em #666;
+ -webkit-box-shadow: inset 0 0 10em #666;
+ box-shadow: inset 0 0 10em #666;
+ position: absolute;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 100%;
+ z-index: 2;
+ content: "";
+}*/
+
+.hud-button {
+  color: white;
+  width: 120px;
+  height: 120px;
+  background-color: #0480D1;
+  font-size: 6pt;
+  padding: 15px;
+}
+
+.hud-button span {
+  position: absolute;
+  width: 50px;
+  height: 10px;
+  top: calc(50% - 10px);
+  left: calc(50% - 25px);
+  font-size: 12pt;
+}
+
+.hud-button.selected {
+  border: 4px solid white;
+}

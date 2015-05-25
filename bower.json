@@ -1,0 +1,25 @@
+{
+  "name": "3D-cube",
+  "version": "0.1.0",
+  "homepage": "https://github.com/vr-components/vr-div",
+  "authors": [
+    "Diego Marcos <diego.marcos@gmail.com>"
+  ],
+  "main": "script.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "index.html",
+    "karma.conf.js",
+    "package.json",
+    "README.md"
+  ],
+  "dependencies": {
+    "threejs": "mrdoob/three.js"
+  },
+  "devDependencies": {}
+}
