@@ -75,7 +75,7 @@ module.exports = component.register('vr-object', {
     var rotX = VR.Math.degToRad(orientationX);
     var rotY = VR.Math.degToRad(orientationY);
 
-    var translation = new VR.Matrix4().makeTranslation(x, y, this.perspective - z);
+    var translation = new VR.Matrix4().makeTranslation(x, y, -z);
     var rotationY = new VR.Matrix4().makeRotationY(rotY);
     var rotationX = new VR.Matrix4().makeRotationX(rotX);
     var matrix = new VR.Matrix4();

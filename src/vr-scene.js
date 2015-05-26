@@ -22,6 +22,7 @@ module.exports = component.register('vr-scene', {
 
   created: function() {
     this.setupShadowRoot();
+    this.setFOV(45);
     this.setupWebGLScene();
     this.animate();
   },
@@ -37,6 +38,16 @@ module.exports = component.register('vr-scene', {
       this.scene.add(obj);
     }
     return obj;
+  },
+
+  setFOV: function(fov) {
+    var fov = 0.5 / Math.tan( THREE.Math.degToRad( fov * 0.5 ) ) * this.clientHeight;
+    this.style.perspective = fov + "px";
+    var camera = this.shadowRoot.querySelector('.camera');
+    camera.style.height = this.clientHeight + 'px';
+    camera.style.width = this.clientWidth + 'px';
+    var transform = "translate3d(0,0," + fov + "px)";
+    camera.style.transform = transform;
   },
 
   setupWebGLScene: function() {
@@ -95,7 +106,9 @@ module.exports = component.register('vr-scene', {
 
   template: `
     <canvas width="100%" height="100%"></canvas>
-    <content></content>
+    <div class="camera">
+      <content></content>
+    </div>
     <style>
 
     :host {
@@ -103,12 +116,16 @@ module.exports = component.register('vr-scene', {
       display: inline-block;
       box-sizing: border-box;
       transform-style: preserve-3d;
-      perspective: 800px;
       width: 100%;
       height: 100vh;
     }
 
     :host vr-object, vr-model {
+      position: absolute;
+      transform-style: preserve-3d;
+    }
+
+    .camera, canvas {
       position: absolute;
       transform-style: preserve-3d;
     }
