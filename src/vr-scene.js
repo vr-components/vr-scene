@@ -23,9 +23,38 @@ module.exports = component.register('vr-scene', {
   created: function() {
     this.setupShadowRoot();
     this.setupRenderer();
-    this.setupScene();
     this.setupCamera();
+    this.setupScene();
     this.animate();
+  },
+
+  epsilon: function ( value ) {
+    return Math.abs( value ) < 0.000001 ? 0 : value;
+  },
+
+  getCSSMatrix: function (matrix) {
+    var epsilon = this.epsilon;
+    var elements = matrix.elements;
+
+    return 'matrix3d(' +
+      epsilon( elements[ 0 ] ) + ',' +
+      epsilon( - elements[ 1 ] ) + ',' +
+      epsilon( elements[ 2 ] ) + ',' +
+      epsilon( elements[ 3 ] ) + ',' +
+      epsilon( elements[ 4 ] ) + ',' +
+      epsilon( - elements[ 5 ] ) + ',' +
+      epsilon( elements[ 6 ] ) + ',' +
+      epsilon( elements[ 7 ] ) + ',' +
+      epsilon( elements[ 8 ] ) + ',' +
+      epsilon( - elements[ 9 ] ) + ',' +
+      epsilon( elements[ 10 ] ) + ',' +
+      epsilon( elements[ 11 ] ) + ',' +
+      epsilon( elements[ 12 ] ) + ',' +
+      epsilon( - elements[ 13 ] ) + ',' +
+      epsilon( elements[ 14 ] ) + ',' +
+      epsilon( elements[ 15 ] ) +
+    ')';
+
   },
 
   addObject: function(el) {
@@ -46,11 +75,15 @@ module.exports = component.register('vr-scene', {
     var camera = this.shadowRoot.querySelector('vr-camera');
     var fov = camera.getAttribute('fov');
     var perspective = camera.perspective;
-    this.style.perspective =  perspective + 'px';
+    //this.style.perspective =  perspective + 'px';
 
     // WebGL
     var camera = this.camera = new THREE.PerspectiveCamera(fov, this.offsetWidth / this.offsetHeight, 1, 1200 );
     camera.position.z = perspective;
+
+    var cameraMatrix = this.getCSSMatrix(this.camera.projectionMatrix);
+    var transpose = this.camera.projectionMatrix.clone().transpose();
+    this.style.transform = cameraMatrix;
   },
 
   setupRenderer: function() {
@@ -120,7 +153,6 @@ module.exports = component.register('vr-scene', {
       position: relative;
       display: inline-block;
       box-sizing: border-box;
-      transform-style: preserve-3d;
       width: 100%;
       height: 100vh;
     }

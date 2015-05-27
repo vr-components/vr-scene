@@ -29,14 +29,22 @@ module.exports = component.register('vr-camera', {
   setFOV: function(fov) {
     var fov = 0.5 / Math.tan( THREE.Math.degToRad( fov * 0.5 ) ) * this.scene.clientHeight;
     this.perspective = fov;
-    var transform = "translate3d(0 , 0," + fov + "px)";
-    this.style.transform = transform;
+    this.updateTransform();
+
   },
 
   attributeChanged: function(name, from, to) {
     if (name === "fov") {
       this.setFOV(to);
     }
+    if (name === "style") {
+      this.updateTransform();
+    }
+  },
+
+  updateTransform: function() {
+    var transform = "translate3d(0 , 0," + this.perspective + "px)";
+    this.style.transform = transform;
   },
 
   findScene: function() {

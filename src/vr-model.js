@@ -45,14 +45,14 @@ module.exports = component.register('vr-model', {
     this.object3D = model;
     this.scene.addObject(this);
     this.attachClickHandler();
-    this.animate();
+    // this.animate();
   },
 
   attachClickHandler: function() {
     var self = this;
     self.mousePos = new THREE.Vector2(0, 0);
-    //this.scene.addEventListener('mousemove', onMouseMoved, false);
-    //document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+    // this.scene.addEventListener('mousemove', onMouseMoved, false);
+    // document.addEventListener( 'mousedown', onDocumentMouseDown, false );
 
     function onMouseMoved ( e ) {
       e.preventDefault();
