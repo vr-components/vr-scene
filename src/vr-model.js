@@ -26,7 +26,7 @@ module.exports = component.register('vr-model', {
       y: 0,
       z: 0
     };
-    this.orientation = new VR.Euler(0, 0, 0);
+    this.orientation = new VR.Euler(0, 0, 0, "YXZ");
     this.setupShadowRoot();
     this.setupScene();
     this.updateTransform();
@@ -51,8 +51,8 @@ module.exports = component.register('vr-model', {
   attachClickHandler: function() {
     var self = this;
     self.mousePos = new THREE.Vector2(0, 0);
-    this.scene.addEventListener('mousemove', onMouseMoved, false);
-    document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+    //this.scene.addEventListener('mousemove', onMouseMoved, false);
+    //document.addEventListener( 'mousedown', onDocumentMouseDown, false );
 
     function onMouseMoved ( e ) {
       e.preventDefault();
@@ -189,7 +189,7 @@ module.exports = component.register('vr-model', {
       var angleChange = angularSpeed * timeDiff * 2 * Math.PI / 1000;
       self.model.rotation.y += angleChange;
       self.lastTime = time;
-      this.intersectMouse();
+      //this.intersectMouse();
     }
   },
 
@@ -256,7 +256,7 @@ module.exports = component.register('vr-model', {
     var y = this.position.y = this.getAttribute('y') || 0;
     var z = this.position.z = this.getAttribute('z') || 0;
 
-    var translation = new VR.Matrix4().makeTranslation(x, y, this.perspective - z);
+    var translation = new VR.Matrix4().makeTranslation(x, y, -z);
     var rotationY = new VR.Matrix4().makeRotationY(VR.Math.degToRad(orientationY));
     var rotationX = new VR.Matrix4().makeRotationX(VR.Math.degToRad(orientationX));
     var matrix = new VR.Matrix4();
@@ -292,7 +292,6 @@ module.exports = component.register('vr-model', {
   },
 
   template: `
-    <canvas width="100%" height="100%"></canvas>
     :host {
       left: 50%;
       top: 50%;
