@@ -38,19 +38,19 @@ module.exports = component.register('vr-scene', {
 
     return 'matrix3d(' +
       epsilon( elements[ 0 ] ) + ',' +
-      epsilon( - elements[ 1 ] ) + ',' +
+      epsilon( elements[ 1 ] ) + ',' +
       epsilon( elements[ 2 ] ) + ',' +
       epsilon( elements[ 3 ] ) + ',' +
       epsilon( elements[ 4 ] ) + ',' +
-      epsilon( - elements[ 5 ] ) + ',' +
+      epsilon( elements[ 5 ] ) + ',' +
       epsilon( elements[ 6 ] ) + ',' +
       epsilon( elements[ 7 ] ) + ',' +
       epsilon( elements[ 8 ] ) + ',' +
-      epsilon( - elements[ 9 ] ) + ',' +
+      epsilon( elements[ 9 ] ) + ',' +
       epsilon( elements[ 10 ] ) + ',' +
       epsilon( elements[ 11 ] ) + ',' +
       epsilon( elements[ 12 ] ) + ',' +
-      epsilon( - elements[ 13 ] ) + ',' +
+      epsilon( elements[ 13 ] ) + ',' +
       epsilon( elements[ 14 ] ) + ',' +
       epsilon( elements[ 15 ] ) +
     ')';
@@ -75,15 +75,45 @@ module.exports = component.register('vr-scene', {
     var camera = this.shadowRoot.querySelector('vr-camera');
     var fov = camera.getAttribute('fov');
     var perspective = camera.perspective;
-    //this.style.perspective =  perspective + 'px';
+    this.style.perspective =  perspective + 'px';
 
     // WebGL
     var camera = this.camera = new THREE.PerspectiveCamera(fov, this.offsetWidth / this.offsetHeight, 1, 1200 );
-    camera.position.z = perspective;
+    //camera.position.z = perspective;
+    // console.log(perspective);
 
-    var cameraMatrix = this.getCSSMatrix(this.camera.projectionMatrix);
-    var transpose = this.camera.projectionMatrix.clone().transpose();
-    this.style.transform = cameraMatrix;
+    var perspectiveMatrix = this.perspectiveMatrix(VR.Math.degToRad(45), this.offsetWidth / this.offsetHeight, 1, 1200);
+    //camera.matrixWorldInverse.getInverse( camera.matrixWorld );
+    var style = this.getCSSMatrix( perspectiveMatrix );
+
+    //var cameraMatrix = this.getCSSMatrix(this.camera.projectionMatrix);
+    //var transpose = this.camera.projectionMatrix.clone().transpose();
+    // this.style.transform = style;
+  },
+
+  perspectiveMatrix: function(fov, aspect, nearz, farz) {
+
+    var matrix = new VR.Matrix4();
+    var range= Math.tan(fov * 0.5) * nearz;
+
+    matrix.elements[0] = (2 * nearz) / ((range * aspect) - (-range * aspect));
+    matrix.elements[1] = 0;
+    matrix.elements[2] = 0;
+    matrix.elements[3] = 0;
+    matrix.elements[4] = 0;
+    matrix.elements[5] = (2 * nearz) / (2 * range);
+    matrix.elements[6] = 0;
+    matrix.elements[7] = 0;
+    matrix.elements[8] = 0;
+    matrix.elements[9] = 0;
+    matrix.elements[10] = -(farz + nearz) / (farz - nearz);
+    matrix.elements[11] = -1;
+    matrix.elements[12] = 0;
+    matrix.elements[13] = 0;
+    matrix.elements[14] = -(2 * farz * nearz) / (farz - nearz);
+    matrix.elements[15] = 0;
+    return matrix.transpose();
+
   },
 
   setupRenderer: function() {
@@ -164,7 +194,6 @@ module.exports = component.register('vr-scene', {
 
     canvas {
       position: absolute;
-      transform-style: preserve-3d;
     }
 
     </style>`

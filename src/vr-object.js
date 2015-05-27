@@ -80,7 +80,7 @@ module.exports = component.register('vr-object', {
     var rotationX = new VR.Matrix4().makeRotationX(rotX);
     var matrix = new VR.Matrix4();
     this.style.transform = 'translate3d(-50%, -50%, 0) ' + this.getCameraCSSMatrix(translation.multiply(rotationY.multiply(rotationX)));
-    this.object3D.position.set(0, 0, this.perspective - z);
+    this.object3D.position.set(0, 0, z);
     this.object3D.rotation.order = 'YXZ';
     this.object3D.rotation.set(-rotX, rotY, 0);
   },

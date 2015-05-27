@@ -30,7 +30,6 @@ module.exports = component.register('vr-camera', {
     var fov = 0.5 / Math.tan( THREE.Math.degToRad( fov * 0.5 ) ) * this.scene.clientHeight;
     this.perspective = fov;
     this.updateTransform();
-
   },
 
   attributeChanged: function(name, from, to) {
@@ -43,7 +42,7 @@ module.exports = component.register('vr-camera', {
   },
 
   updateTransform: function() {
-    var transform = "translate3d(0 , 0," + this.perspective + "px)";
+    var transform = "translate3d(0 , 0," + 0 + "px)";
     this.style.transform = transform;
   },
 
