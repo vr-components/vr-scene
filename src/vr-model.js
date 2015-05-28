@@ -45,7 +45,7 @@ module.exports = component.register('vr-model', {
     this.object3D = model;
     this.scene.addObject(this);
     this.attachClickHandler();
-    this.animate();
+    //this.animate();
   },
 
   attachClickHandler: function() {
