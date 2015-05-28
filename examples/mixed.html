@@ -9,16 +9,18 @@
 
 <body>
   <vr-scene class="scene">
-    <vr-object class="pivot">
-      <vr-object class="hud" z="400">
-        <vr-object x="-200" class="hud-button">
-          <div>
-            <h1>Hello, World<h1>
-            <p>The Brown Lazy Fox...</p>
-          </div>
+    <vr-object class="world">
+      <vr-object class="pivot">
+        <vr-object class="hud" z="400">
+          <vr-object x="-200" class="hud-button">
+            <div>
+              <h1>Hello, World<h1>
+              <p>The Brown Lazy Fox...</p>
+            </div>
+          </vr-object>
+          <vr-object x="0" class="hud-button"><span>WebVR</span></vr-object>
+          <vr-model x="200" class="hud-cube"></vr-model>
         </vr-object>
-        <vr-object x="0" class="hud-button"><span>WebVR</span></vr-object>
-        <vr-model x="200" class="hud-model"></vr-model>
       </vr-object>
     </vr-object>
   </vr-scene>
@@ -37,6 +39,7 @@
   <script src="../src/vr-model.js"></script>
   <script src="../src/vr-object.js"></script>
   <script>
+    var scene = document.querySelector("vr-scene");
     var buttons = document.querySelectorAll(".hud-button");
     var selectedButton;
     for (var i=0; i < buttons.length; ++i) {
@@ -47,9 +50,7 @@
         button.currentTarget.classList.add('selected');
         selectedButton = button.currentTarget;
         xObj.x = selectedButton.getAttribute('x') || 0;
-        x.updateDisplay();
         yObj.y = selectedButton.getAttribute('y') || 0;
-        y.updateDisplay();
       }
     }
     var hud = document.querySelector(".hud");
@@ -90,6 +91,78 @@
     y.onChange(function(value) {
       selectedButton.setAttribute('y', value)
     });
+
+    var world = document.querySelector('.world');
+    var x = 0;
+    var z = 0;
+    var rotX = 0;
+    var rotY = 0;
+    var lastMouseX;
+    var lastMouseY;
+    var rotationEnabled;
+    // key events
+    window.addEventListener('keydown', function(event) {
+      switch (event.keyCode) {
+        case 65: // Left
+          x -= 5;
+          world.setAttribute('x', x);
+        break;
+
+        case 87: // Up
+          z -= 5;
+          world.setAttribute('z', z);
+        break;
+
+        case 68: // Right
+          x += 5;
+          world.setAttribute('x', x);
+        break;
+
+        case 83: // Down
+          z += 5;
+          world.setAttribute('z', z);
+        break;
+
+        case 90: // z
+          x = 0;
+          y = 0;
+          z = 0;
+          rotX = 0;
+          rotY = 0;
+          world.setAttribute('x', x);
+          world.setAttribute('y', y);
+          world.setAttribute('z', z);
+          world.setAttribute('lat', rotY);
+          world.setAttribute('long', rotX);
+          radius.setValue(400);
+          lat.setValue(0);
+          long.setValue(0);
+        break;
+      }
+    }, false);
+    scene.addEventListener('mousedown', function(event) {
+      rotationEnabled = true;
+      lastMouseX = event.clientX;
+      lastMouseY = event.clientY;
+    }, true);
+    scene.addEventListener('mouseup', function(event) {
+      rotationEnabled = false;
+    }, true);
+    scene.addEventListener('mousemove', function(event) {
+      if (!rotationEnabled) {
+        return;
+      }
+      var deltaX = event.clientX - lastMouseX;
+      var deltaY = event.clientY - lastMouseY;
+      rotX += deltaX;
+      rotY += deltaY;
+      lastMouseX = event.clientX;
+      lastMouseY = event.clientY;
+      world.setAttribute('lat', rotY);
+      world.setAttribute('long', rotX);
+    }, true);
+
+
   </script>
 </body>
 </html>

@@ -42,8 +42,7 @@ module.exports = component.register('vr-model', {
     this.raycaster = new THREE.Raycaster();
     model.overdraw = true;
     model.position.set(x, y, z);
-    this.object3D = model;
-    this.scene.addObject(this);
+    this.scene.addObject(this, model);
     this.attachClickHandler();
     //this.animate();
   },
@@ -295,6 +294,8 @@ module.exports = component.register('vr-model', {
     :host {
       left: 50%;
       top: 50%;
+      position: absolute;
+      transform-style: preserve-3d;
     }
   `
 });

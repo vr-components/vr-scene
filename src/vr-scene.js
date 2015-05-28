@@ -28,10 +28,13 @@ module.exports = component.register('vr-scene', {
     this.animate();
   },
 
-  addObject: function(el) {
-    var obj = el.object3D = el.object3D || new THREE.Object3D();
+  addObject: function(el, provided_obj) {
+    var obj = el.object3D;
     var objParent = el.parentNode;
-    this.scene.remove(obj);
+    if (obj) {
+      return obj;
+    }
+    obj = el.object3D = provided_obj || new THREE.Object3D();
     if (objParent && objParent !== this) {
       objParent = this.addObject(el.parentNode);
       objParent.add(obj);
@@ -174,7 +177,7 @@ module.exports = component.register('vr-scene', {
     <canvas width="100%" height="100%"></canvas>
     <div class="viewport">
       <vr-camera>
-        <content></content>
+          <content></content>
       </vr-camera>
     </div>
 
@@ -192,11 +195,6 @@ module.exports = component.register('vr-scene', {
       transform-style: preserve-3d;
       width: 100%;
       height: 100vh;
-    }
-
-    :host vr-object, vr-model {
-      position: absolute;
-      transform-style: preserve-3d;
     }
 
     canvas {
