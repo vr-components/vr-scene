@@ -161,9 +161,6 @@ module.exports = component.register('vr-scene', {
 
   animate: function() {
     var self = this;
-    requestAnimationFrame(function() {
-      self.animate();
-    });
     self.renderer.render(self.scene, self.camera);
   },
 
