@@ -65,7 +65,7 @@
       long: 0,
     };
     var gui = new dat.GUI();
-    var radius = gui.add(distObj, 'distance', 0, 1200);
+    var radius = gui.add(distObj, 'distance', 0, 5000);
     var lat = gui.add(latObj, 'lat', -180, 180).step(0.01);
     var long = gui.add(longObj, 'long', -180, 180).step(0.01);
     radius.onChange(function(value) {
@@ -100,46 +100,58 @@
     var lastMouseX;
     var lastMouseY;
     var rotationEnabled;
+    var lastPress = Date.now();
+    var keys = {};
     // key events
     window.addEventListener('keydown', function(event) {
-      switch (event.keyCode) {
-        case 65: // Left
-          x -= 5;
-          world.setAttribute('x', x);
-        break;
-
-        case 87: // Up
-          z -= 5;
-          world.setAttribute('z', z);
-        break;
-
-        case 68: // Right
-          x += 5;
-          world.setAttribute('x', x);
-        break;
-
-        case 83: // Down
-          z += 5;
-          world.setAttribute('z', z);
-        break;
-
-        case 90: // z
-          x = 0;
-          y = 0;
-          z = 0;
-          rotX = 0;
-          rotY = 0;
-          world.setAttribute('x', x);
-          world.setAttribute('y', y);
-          world.setAttribute('z', z);
-          world.setAttribute('lat', rotY);
-          world.setAttribute('long', rotX);
-          radius.setValue(400);
-          lat.setValue(0);
-          long.setValue(0);
-        break;
-      }
+      keys[event.keyCode] = true;
     }, false);
+
+    window.addEventListener('keyup', function(event) {
+      keys[event.keyCode] = false;
+    }, false);
+
+    window.requestAnimationFrame(updatePositions);
+
+    function updatePositions() {
+      var delta = 10;
+      if (keys[65]) { // Left
+        x -= delta;
+        world.setAttribute('x', x);
+      }
+      if (keys[87]) { // Up
+        z -= delta;
+        world.setAttribute('z', z);
+      }
+      if (keys[68]) { // Right
+        x += delta;
+        world.setAttribute('x', x);
+      }
+      if (keys[83]) { // Down
+        z += delta;
+        world.setAttribute('z', z);
+      }
+
+      if (keys[90]) { // Down
+        x = 0;
+        y = 0;
+        z = 0;
+        rotX = 0;
+        rotY = 0;
+        world.setAttribute('x', x);
+        world.setAttribute('y', y);
+        world.setAttribute('z', z);
+        world.setAttribute('lat', rotY);
+        world.setAttribute('long', rotX);
+        radius.setValue(400);
+        lat.setValue(0);
+        long.setValue(0);
+      }
+      world.setAttribute('lat', rotY);
+      world.setAttribute('long', rotX);
+      window.requestAnimationFrame(updatePositions);
+    }
+
     scene.addEventListener('mousedown', function(event) {
       rotationEnabled = true;
       lastMouseX = event.clientX;
@@ -158,8 +170,6 @@
       rotY += deltaY;
       lastMouseX = event.clientX;
       lastMouseY = event.clientY;
-      world.setAttribute('lat', rotY);
-      world.setAttribute('long', rotX);
     }, true);
 
 

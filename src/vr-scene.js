@@ -79,13 +79,13 @@ module.exports = component.register('vr-scene', {
     var fov = camera.getAttribute('fov');
     var perspective = camera.perspective;
     //this.style.perspective =  perspective + 'px';
-    var perspectiveMatrix = this.perspectiveMatrix(VR.Math.degToRad(45), this.offsetWidth / this.offsetHeight, 1, 1200);
+    var perspectiveMatrix = this.perspectiveMatrix(VR.Math.degToRad(45), this.offsetWidth / this.offsetHeight, 1, 5000);
     var scaled = perspectiveMatrix.clone().scale(new VR.Vector3(this.offsetWidth, this.offsetHeight, 1));
     var style = this.getCSSMatrix( scaled );
     viewport.style.transform = style;
 
     // WebGL
-    var camera = this.camera = new THREE.PerspectiveCamera(45, this.offsetWidth / this.offsetHeight, 1, 1200);
+    var camera = this.camera = new THREE.PerspectiveCamera(45, this.offsetWidth / this.offsetHeight, 1, 5000);
     camera.position.z = 0;
   },
 
