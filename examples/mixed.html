@@ -72,10 +72,10 @@
       hud.setAttribute('z', value)
     });
     lat.onChange(function(value) {
-      pivot.setAttribute('lat', -value)
+      pivot.setAttribute('rotY', -value)
     });
     long.onChange(function(value) {
-      pivot.setAttribute('long', -value)
+      pivot.setAttribute('rotX', -value)
     });
     var xObj = {
       x: 0,
@@ -141,14 +141,14 @@
         world.setAttribute('x', x);
         world.setAttribute('y', y);
         world.setAttribute('z', z);
-        world.setAttribute('lat', rotY);
-        world.setAttribute('long', rotX);
+        world.setAttribute('rotX', rotY);
+        world.setAttribute('rotY', rotX);
         radius.setValue(400);
         lat.setValue(0);
         long.setValue(0);
       }
-      world.setAttribute('lat', rotY);
-      world.setAttribute('long', rotX);
+      world.setAttribute('rotX', rotY);
+      world.setAttribute('rotY', rotX);
       scene.animate();
       window.requestAnimationFrame(updatePositions);
     }
@@ -172,7 +172,6 @@
       lastMouseX = event.clientX;
       lastMouseY = event.clientY;
     }, true);
-
 
   </script>
 </body>

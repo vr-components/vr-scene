@@ -66,20 +66,24 @@ module.exports = component.register('vr-object', {
   },
 
   updateTransform: function() {
-    var orientationX = this.orientation.x = this.getAttribute('lat') || 0;
-    var orientationY = this.orientation.y = this.getAttribute('long') || 0;
+    // Position
     var x = this.position.x = this.getAttribute('x') || 0;
     var y = this.position.y = this.getAttribute('y') || 0;
     var z = this.position.z = this.getAttribute('z') || 0;
+    var translation = new VR.Matrix4().makeTranslation(x, y, -z);
 
+    // Orientation
+    var orientationX = this.orientation.x = this.getAttribute('rotX') || 0;
+    var orientationY = this.orientation.y = this.getAttribute('rotY') || 0;
+    var orientationZ = this.orientation.y = this.getAttribute('rotZ') || 0;
     var rotX = VR.Math.degToRad(orientationX);
     var rotY = VR.Math.degToRad(orientationY);
-
-    var translation = new VR.Matrix4().makeTranslation(x, y, -z);
-    var rotationY = new VR.Matrix4().makeRotationY(rotY);
+    var rotZ = VR.Math.degToRad(orientationZ);
     var rotationX = new VR.Matrix4().makeRotationX(rotX);
-    var matrix = new VR.Matrix4();
-    this.style.transform = 'translate3d(-50%, -50%, 0) ' + this.getCameraCSSMatrix(translation.multiply(rotationY.multiply(rotationX)));
+    var rotationY = new VR.Matrix4().makeRotationY(rotY);
+    var rotationZ = new VR.Matrix4().makeRotationX(rotZ);
+
+    this.style.transform = 'translate3d(-50%, -50%, 0) ' + this.getCameraCSSMatrix(translation.multiply(rotationZ.multiply(rotationY.multiply(rotationX))));
     this.object3D.position.set(x, -y, -z);
     this.object3D.rotation.order = 'YXZ';
     this.object3D.rotation.set(-rotX, rotY, 0);

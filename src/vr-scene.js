@@ -25,7 +25,6 @@ module.exports = component.register('vr-scene', {
     this.setupRenderer();
     this.setupScene();
     this.setupCamera();
-    this.animate();
   },
 
   addObject: function(el, provided_obj) {
@@ -142,8 +141,8 @@ module.exports = component.register('vr-scene', {
   resizeCanvas: function(renderer, camera){
     var canvas = this.canvas;
     // Make it visually fill the positioned parent
-    //canvas.style.width ='100%';
-    //canvas.style.height='100%';
+    canvas.style.width ='100%';
+    canvas.style.height='100%';
     // ...then set the internal size to match
     canvas.width  = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
