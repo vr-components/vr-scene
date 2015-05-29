@@ -9,9 +9,9 @@
 
 <body>
   <vr-scene class="scene">
-    <vr-object class="world">
+    <vr-camera class="world">
       <vr-object class="pivot">
-        <vr-object class="hud" style="--z: 200">
+        <vr-object class="hud" style="--z: 400">
           <vr-object class="hud-button" style="--x: -200">
             <div>
               <h1>Hello, World<h1>
@@ -19,10 +19,11 @@
             </div>
           </vr-object>
           <vr-object class="hud-button"><span>WebVR</span></vr-object>
-          <vr-model class="hud-cube" style="--x: 200"></vr-model>
+          <vr-object class="hud-button" style="--x: 200"><span>WebVR</span></vr-object>
+          <!-- <vr-model class="hud-cube" style="--x: 200"></vr-model> -->
         </vr-object>
       </vr-object>
-    </vr-object>
+    </vr-camera>
   </vr-scene>
   <script src="main.js"></script>
   <script src="../lib/vendor/three.js"></script>
@@ -34,10 +35,10 @@
   <script src="../src/math/euler.js"></script>
   <script src="../lib/dat.gui.js"></script>
   <script src="../lib/gaia-component.js"></script>
-  <script src="../src/vr-camera.js"></script>
   <script src="../src/vr-scene.js"></script>
   <script src="../src/vr-model.js"></script>
   <script src="../src/vr-object.js"></script>
+  <script src="../src/vr-camera.js"></script>
   <script>
     var scene = document.querySelector("vr-scene");
     var buttons = document.querySelectorAll(".hud-button");

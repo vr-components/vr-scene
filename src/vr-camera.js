@@ -21,22 +21,83 @@ module.exports = component.register('vr-camera', {
   extends: HTMLDivElement.prototype,
 
   created: function() {
-    var fov = this.getAttribute('fov') || 45;
+    this.position = {
+      x: 0,
+      y: 0,
+      z: 0
+    };
+    this.orientation = new VR.Euler(0, 0, 0);
+    this.setupShadowRoot();
     this.findScene();
-    this.setAttribute('fov', fov);
-  },
-
-  setFOV: function(fov) {
-    var fov = 0.5 / Math.tan( THREE.Math.degToRad( fov * 0.5 ) ) * this.scene.clientHeight;
-    this.perspective = fov;
-    //var transform = "translate3d(0 , 0," + fov + "px)";
-    //this.style.transform = transform;
+    this.scene.addObject(this);
+    this.updateTransform();
   },
 
   attributeChanged: function(name, from, to) {
-    if (name === "fov") {
-      this.setFOV(to);
-    }
+    this.updateTransform();
+  },
+
+  epsilon: function ( value ) {
+    return Math.abs( value ) < 0.000001 ? 0 : value;
+  },
+
+  getCameraCSSMatrix: function (matrix) {
+    var epsilon = this.epsilon;
+    var elements = matrix.elements;
+
+    return 'matrix3d(' +
+      epsilon( elements[ 0 ] ) + ',' +
+      epsilon( elements[ 1 ] ) + ',' +
+      epsilon( elements[ 2 ] ) + ',' +
+      epsilon( elements[ 3 ] ) + ',' +
+      epsilon( elements[ 4 ] ) + ',' +
+      epsilon( elements[ 5 ] ) + ',' +
+      epsilon( elements[ 6 ] ) + ',' +
+      epsilon( elements[ 7 ] ) + ',' +
+      epsilon( elements[ 8 ] ) + ',' +
+      epsilon( elements[ 9 ] ) + ',' +
+      epsilon( elements[ 10 ] ) + ',' +
+      epsilon( elements[ 11 ] ) + ',' +
+      epsilon( elements[ 12 ] ) + ',' +
+      epsilon( elements[ 13 ] ) + ',' +
+      epsilon( elements[ 14 ] ) + ',' +
+      epsilon( elements[ 15 ] ) +
+    ')';
+  },
+
+  updateTransform: function() {
+    var elStyles = window.getComputedStyle(this);
+    // Position
+    var x = elStyles.getPropertyValue('--x') || 0;
+    var y = elStyles.getPropertyValue('--y') || 0;
+    var z = elStyles.getPropertyValue('--z') || 0;
+    var translation = new VR.Matrix4().makeTranslation(x, y, -z);
+
+    // Orientation
+    var orientationX = elStyles.getPropertyValue('--rotX') || 0;
+    var orientationY = elStyles.getPropertyValue('--rotY') || 0;
+    var orientationZ = elStyles.getPropertyValue('--rotZ') || 0;
+    var rotX = VR.Math.degToRad(orientationX);
+    var rotY = VR.Math.degToRad(orientationY);
+    var rotZ = VR.Math.degToRad(orientationZ);
+    var rotationX = new VR.Matrix4().makeRotationX(rotX);
+    var rotationY = new VR.Matrix4().makeRotationY(rotY);
+    var rotationZ = new VR.Matrix4().makeRotationX(rotZ);
+
+    this.style.transform = 'translate3d(-50%, -50%, 0) ' + this.getCameraCSSMatrix(rotationZ.multiply(rotationY.multiply(rotationX.multiply(translation))));
+    this.object3D.position.set(x, -y, -z);
+    this.object3D.rotation.order = 'YXZ';
+    this.object3D.rotation.set(-rotX, rotY, 0);
+
+    var object3D = this.object3D;
+    object3D.matrixAutoUpdate = false;
+    object3D.matrix = new THREE.Matrix4();
+    object3D.matrix.setPosition( object3D.position );
+    // object3D.matrix.scale( object3D.scale );
+    var rotMatrix = new THREE.Matrix4().makeRotationFromQuaternion( object3D.quaternion );
+    object3D.matrix.multiply(rotMatrix);
+    //object3D.matrix.makeRotationFromQuaternion( object3D.quaternion );
+
   },
 
   findScene: function() {
@@ -67,16 +128,13 @@ module.exports = component.register('vr-camera', {
 
   template: `
     <content></content>
-    <style>
-
     :host {
-      width: 100%;
-      height: 100vh;
+      left: 50%;
+      top: 50%;
       position: absolute;
       transform-style: preserve-3d;
     }
-
-    </style>`
+  `
 });
 
 });})(typeof define=='function'&&define.amd?define
