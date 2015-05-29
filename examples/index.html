@@ -121,7 +121,7 @@
     function updatePositions() {
       var delta = 10;
       if (keys[65]) { // Left
-        x -= delta;
+        x += delta;
         world.style.setProperty('--x', x);
         // world.setAttribute('x', x);
       }
@@ -131,7 +131,7 @@
         // world.setAttribute('z', z);
       }
       if (keys[68]) { // Right
-        x += delta;
+        x -= delta;
         world.style.setProperty('--x', x);
         // world.setAttribute('x', x);
       }
@@ -185,7 +185,7 @@
       }
       var deltaX = event.clientX - lastMouseX;
       var deltaY = event.clientY - lastMouseY;
-      rotX += deltaX;
+      rotX -= deltaX;
       rotY += deltaY;
       lastMouseX = event.clientX;
       lastMouseY = event.clientY;
