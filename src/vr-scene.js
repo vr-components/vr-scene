@@ -30,10 +30,10 @@ module.exports = component.register('vr-scene', {
   addObject: function(el, provided_obj) {
     var obj = el.object3D;
     var objParent = el.parentNode;
-    if (obj) {
+    if (obj && this.scene.getObjectById(obj.id)) {
       return obj;
     }
-    obj = el.object3D = provided_obj || new THREE.Object3D();
+    obj = el.object3D = el.object3D || provided_obj || new THREE.Object3D();
     if (objParent && objParent !== this) {
       objParent = this.addObject(el.parentNode);
       objParent.add(obj);
@@ -72,8 +72,7 @@ module.exports = component.register('vr-scene', {
   },
 
   setupCamera: function() {
-    var elStyles = window.getComputedStyle(this);
-    var fov = elStyles.getPropertyValue('--fov') || 45;
+    var fov = this.style.getPropertyValue('--fov') || 45;
     var viewport = this.shadowRoot.querySelector('.viewport');
 
     // DOM camera
@@ -200,4 +199,4 @@ module.exports = component.register('vr-scene', {
 });})(typeof define=='function'&&define.amd?define
 :(function(n,w){'use strict';return typeof module=='object'?function(c){
 c(require,exports,module);}:function(c){var m={exports:{}};c(function(n){
-return w[n];},m.exports,m);w[n]=m.exports;};})('vr-scene',this));
+return w[n];},m.exports,m);w[n]=m.exports;};})('VRSCene',this));

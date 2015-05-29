@@ -18,32 +18,23 @@ var debug = 0 ? console.log.bind(console) : function() {};
  */
 
 module.exports = component.register('vr-model', {
-  extends: HTMLDivElement.prototype,
+  extends: VRObject.prototype,
 
   created: function() {
-    this.position = {
-      x: 0,
-      y: 0,
-      z: 0
-    };
-    this.orientation = new VR.Euler(0, 0, 0, "YXZ");
-    this.setupShadowRoot();
     this.setupScene();
-    this.updateTransform();
+    VRObject.prototype.created.call(this);
   },
 
   setupScene: function() {
-    this.findScene();
     var material = new THREE.MeshLambertMaterial({ color: 'magenta' });
     var model = this.model = new THREE.Mesh(new THREE.BoxGeometry(120, 120, 120), material);
-    var elStyles = window.getComputedStyle(this);
-    var x = elStyles.getPropertyValue('--x') || 0;
-    var y = elStyles.getPropertyValue('--y') || 0;
-    var z = elStyles.getPropertyValue('--z');
+    var x = this.style.getPropertyValue('--x') || 0;
+    var y = this.style.getPropertyValue('--y') || 0;
+    var z = this.style.getPropertyValue('--z');
     this.raycaster = new THREE.Raycaster();
     model.overdraw = true;
     model.position.set(x, y, -z);
-    this.scene.addObject(this, model);
+    this.object3D = model;
     this.attachClickHandler();
     //this.animate();
   },
@@ -217,87 +208,6 @@ module.exports = component.register('vr-model', {
     }
   },
 
-  attributeChanged: function(name, from, to) {
-    this.updateTransform();
-  },
-
-  epsilon: function ( value ) {
-    return Math.abs( value ) < 0.000001 ? 0 : value;
-  },
-
-  getCameraCSSMatrix: function (matrix) {
-    var epsilon = this.epsilon;
-    var elements = matrix.elements;
-
-    return 'matrix3d(' +
-      epsilon( elements[ 0 ] ) + ',' +
-      epsilon( elements[ 1 ] ) + ',' +
-      epsilon( elements[ 2 ] ) + ',' +
-      epsilon( elements[ 3 ] ) + ',' +
-      epsilon( elements[ 4 ] ) + ',' +
-      epsilon( elements[ 5 ] ) + ',' +
-      epsilon( elements[ 6 ] ) + ',' +
-      epsilon( elements[ 7 ] ) + ',' +
-      epsilon( elements[ 8 ] ) + ',' +
-      epsilon( elements[ 9 ] ) + ',' +
-      epsilon( elements[ 10 ] ) + ',' +
-      epsilon( elements[ 11 ] ) + ',' +
-      epsilon( elements[ 12 ] ) + ',' +
-      epsilon( elements[ 13 ] ) + ',' +
-      epsilon( elements[ 14 ] ) + ',' +
-      epsilon( elements[ 15 ] ) +
-    ')';
-  },
-
-  updateTransform: function() {
-    var elStyles = window.getComputedStyle(this);
-    // Position
-    var x = this.position.x = elStyles.getPropertyValue('--x') || 0;
-    var y = this.position.y = elStyles.getPropertyValue('--y') || 0;
-    var z = this.position.z = elStyles.getPropertyValue('--z') || 0;
-    var translation = new VR.Matrix4().makeTranslation(x, y, -z);
-
-    // Orientation
-    var orientationX = this.orientation.x = elStyles.getPropertyValue('--rotX') || 0;
-    var orientationY = this.orientation.y = elStyles.getPropertyValue('--rotY') || 0;
-    var orientationZ = this.orientation.y = elStyles.getPropertyValue('--rotZ') || 0;
-
-    var translation = new VR.Matrix4().makeTranslation(x, y, -z);
-    var rotationX = new VR.Matrix4().makeRotationX(VR.Math.degToRad(orientationX));
-    var rotationY = new VR.Matrix4().makeRotationY(VR.Math.degToRad(orientationY));
-    var rotationZ = new VR.Matrix4().makeRotationY(VR.Math.degToRad(orientationZ));
-
-    this.style.transform = 'translate3d(-50%, -50%, 0) ' + this.getCameraCSSMatrix(translation.multiply(rotationZ.multiply(rotationY.multiply(rotationX))));
-  },
-
-  findScene: function() {
-    var scenes = document.querySelectorAll('vr-scene');
-    var perspective;
-    for (var i=0; i < scenes.length; ++i) {
-      if (isDescendant(scenes[i], this)) {
-        this.scene = scenes[i];
-        perspective = window.getComputedStyle(this.scene, null).perspective;
-        this.perspective = parseInt(perspective.substring(0, perspective.indexOf("px"))) - 1;
-        this.updateTransform();
-        return;
-      }
-    }
-
-    this.perspective = 0;
-    this.updateTransform();
-
-    function isDescendant(parent, child) {
-     var node = child.parentNode;
-     while (node != null) {
-         if (node == parent) {
-             return true;
-         }
-         node = node.parentNode;
-     }
-     return false;
-    }
-  },
-
   template: `
     :host {
       left: 50%;
@@ -311,4 +221,4 @@ module.exports = component.register('vr-model', {
 });})(typeof define=='function'&&define.amd?define
 :(function(n,w){'use strict';return typeof module=='object'?function(c){
 c(require,exports,module);}:function(c){var m={exports:{}};c(function(n){
-return w[n];},m.exports,m);w[n]=m.exports;};})('vr-model',this));
+return w[n];},m.exports,m);w[n]=m.exports;};})('VRModel',this));

@@ -21,12 +21,6 @@ module.exports = component.register('vr-object', {
   extends: HTMLDivElement.prototype,
 
   created: function() {
-    this.position = {
-      x: 0,
-      y: 0,
-      z: 0
-    };
-    this.orientation = new VR.Euler(0, 0, 0);
     this.setupShadowRoot();
     this.findScene();
     this.scene.addObject(this);
@@ -66,17 +60,17 @@ module.exports = component.register('vr-object', {
   },
 
   updateTransform: function() {
-    var elStyles = window.getComputedStyle(this);
     // Position
-    var x = elStyles.getPropertyValue('--x') || 0;
-    var y = elStyles.getPropertyValue('--y') || 0;
-    var z = elStyles.getPropertyValue('--z') || 0;
+    var x = this.style.getPropertyValue('--x') || 0;
+    var y = this.style.getPropertyValue('--y') || 0;
+    var z = this.style.getPropertyValue('--z') || 0;
     var translation = new VR.Matrix4().makeTranslation(x, y, -z);
 
     // Orientation
-    var orientationX = elStyles.getPropertyValue('--rotX') || 0;
-    var orientationY = elStyles.getPropertyValue('--rotY') || 0;
-    var orientationZ = elStyles.getPropertyValue('--rotZ') || 0;
+    var orientationX = this.style.getPropertyValue('--rotX') || 0;
+    var orientationY = this.style.getPropertyValue('--rotY') || 0;
+    var orientationZ = this.style.getPropertyValue('--rotZ') || 0;
+
     var rotX = VR.Math.degToRad(orientationX);
     var rotY = VR.Math.degToRad(orientationY);
     var rotZ = VR.Math.degToRad(orientationZ);
@@ -96,24 +90,6 @@ module.exports = component.register('vr-object', {
     var perspective;
     for (var i=0; i < scenes.length; ++i) {
       this.scene = scenes[i];
-      if (scenes[i] === this.parentNode) {
-        perspective = window.getComputedStyle(this.scene, null).perspective;
-        this.perspective = parseInt(perspective.substring(0, perspective.indexOf("px"))) - 1;
-        return;
-      }
-    }
-
-    this.perspective = 0;
-
-    function isDescendant(parent, child) {
-     var node = child.parentNode;
-     while (node != null) {
-         if (node == parent) {
-             return true;
-         }
-         node = node.parentNode;
-     }
-     return false;
     }
   },
 
@@ -131,4 +107,4 @@ module.exports = component.register('vr-object', {
 });})(typeof define=='function'&&define.amd?define
 :(function(n,w){'use strict';return typeof module=='object'?function(c){
 c(require,exports,module);}:function(c){var m={exports:{}};c(function(n){
-return w[n];},m.exports,m);w[n]=m.exports;};})('vr-object',this));
+return w[n];},m.exports,m);w[n]=m.exports;};})('VRObject',this));

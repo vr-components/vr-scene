@@ -19,8 +19,7 @@
             </div>
           </vr-object>
           <vr-object class="hud-button"><span>WebVR</span></vr-object>
-          <vr-object class="hud-button" style="--x: 200"><span>WebVR</span></vr-object>
-          <!-- <vr-model class="hud-cube" style="--x: 200"></vr-model> -->
+          <vr-model class="hud-cube" style="--x: 200"></vr-model>
         </vr-object>
       </vr-object>
     </vr-camera>
@@ -36,8 +35,8 @@
   <script src="../lib/vendor/dat.gui.js"></script>
   <script src="../lib/gaia-component.js"></script>
   <script src="../src/vr-scene.js"></script>
-  <script src="../src/vr-model.js"></script>
   <script src="../src/vr-object.js"></script>
+  <script src="../src/vr-model.js"></script>
   <script src="../src/vr-camera.js"></script>
   <script>
     var scene = document.querySelector("vr-scene");
@@ -50,8 +49,8 @@
         }
         button.currentTarget.classList.add('selected');
         selectedButton = button.currentTarget;
-        xObj.x = selectedButton.getAttribute('x') || 0;
-        yObj.y = selectedButton.getAttribute('y') || 0;
+        xObj.x = parseInt(selectedButton.style.getPropertyValue('--x')) || 0;
+        yObj.y = parseInt(selectedButton.style.getPropertyValue('--y')) || 0;
       }
     }
     var hud = document.querySelector(".hud");
@@ -70,15 +69,12 @@
     var lat = gui.add(latObj, 'lat', -180, 180).step(0.01);
     var long = gui.add(longObj, 'long', -180, 180).step(0.01);
     radius.onChange(function(value) {
-      //hud.setAttribute('z', value);
       hud.style.setProperty('--z', value);
     });
     lat.onChange(function(value) {
-      //pivot.setAttribute('rotY', -value);
       pivot.style.setProperty('--rotY', value);
     });
     long.onChange(function(value) {
-      //pivot.setAttribute('rotX', -value);
       pivot.style.setProperty('--rotX', value);
     });
     var xObj = {
@@ -91,11 +87,9 @@
     var y = gui.add(yObj, 'y', -500, 500);
     x.onChange(function(value) {
       selectedButton.style.setProperty('--x', value);
-      //selectedButton.setAttribute('x', value)
     });
     y.onChange(function(value) {
       selectedButton.style.setProperty('--y', value);
-      //selectedButton.setAttribute('y', value)
     });
 
     var camera = document.querySelector('.camera');
@@ -138,7 +132,7 @@
         camera.style.setProperty('--z', z);
       }
 
-      if (keys[90]) { // Down
+      if (keys[90]) { // Z
         x = 0;
         y = 0;
         z = 0;
@@ -152,17 +146,10 @@
         camera.style.setProperty('--rotX', rotY * smooth);
         camera.style.setProperty('--rotY', rotX * smooth);
 
-        // camera.setAttribute('x', x)
-        // camera.setAttribute('y', y);
-        // camera.setAttribute('z', z);
-        // camera.setAttribute('rotX', rotY);
-        // camera.setAttribute('rotY', rotX);
         radius.setValue(400);
         lat.setValue(0);
         long.setValue(0);
       }
-      // camera.setAttribute('rotX', rotY);
-      // camera.setAttribute('rotY', rotX);
       camera.style.setProperty('--rotX', rotY);
       camera.style.setProperty('--rotY', rotX);
       scene.animate();
