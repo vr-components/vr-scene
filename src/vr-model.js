@@ -36,12 +36,13 @@ module.exports = component.register('vr-model', {
     this.findScene();
     var material = new THREE.MeshLambertMaterial({ color: 'magenta' });
     var model = this.model = new THREE.Mesh(new THREE.BoxGeometry(120, 120, 120), material);
-    var x = this.getAttribute('x') || 0;
-    var y = this.getAttribute('y') || 0;
-    var z = this.getAttribute('z') || 0;
+    var elStyles = window.getComputedStyle(this);
+    var x = elStyles.getPropertyValue('--x') || 0;
+    var y = elStyles.getPropertyValue('--y') || 0;
+    var z = elStyles.getPropertyValue('--z');
     this.raycaster = new THREE.Raycaster();
     model.overdraw = true;
-    model.position.set(x, y, z);
+    model.position.set(x, y, -z);
     this.scene.addObject(this, model);
     this.attachClickHandler();
     //this.animate();
@@ -249,17 +250,24 @@ module.exports = component.register('vr-model', {
   },
 
   updateTransform: function() {
-    var orientationX = this.orientation.x = this.getAttribute('lat') || 0;
-    var orientationY = this.orientation.y = this.getAttribute('long') || 0;
-    var x = this.position.x = this.getAttribute('x') || 0;
-    var y = this.position.y = this.getAttribute('y') || 0;
-    var z = this.position.z = this.getAttribute('z') || 0;
+    var elStyles = window.getComputedStyle(this);
+    // Position
+    var x = this.position.x = elStyles.getPropertyValue('--x') || 0;
+    var y = this.position.y = elStyles.getPropertyValue('--y') || 0;
+    var z = this.position.z = elStyles.getPropertyValue('--z') || 0;
+    var translation = new VR.Matrix4().makeTranslation(x, y, -z);
+
+    // Orientation
+    var orientationX = this.orientation.x = elStyles.getPropertyValue('--rotX') || 0;
+    var orientationY = this.orientation.y = elStyles.getPropertyValue('--rotY') || 0;
+    var orientationZ = this.orientation.y = elStyles.getPropertyValue('--rotZ') || 0;
 
     var translation = new VR.Matrix4().makeTranslation(x, y, -z);
-    var rotationY = new VR.Matrix4().makeRotationY(VR.Math.degToRad(orientationY));
     var rotationX = new VR.Matrix4().makeRotationX(VR.Math.degToRad(orientationX));
-    var matrix = new VR.Matrix4();
-    this.style.transform = 'translate3d(-50%, -50%, 0) ' + this.getCameraCSSMatrix(translation.multiply(rotationY.multiply(rotationX)));
+    var rotationY = new VR.Matrix4().makeRotationY(VR.Math.degToRad(orientationY));
+    var rotationZ = new VR.Matrix4().makeRotationY(VR.Math.degToRad(orientationZ));
+
+    this.style.transform = 'translate3d(-50%, -50%, 0) ' + this.getCameraCSSMatrix(translation.multiply(rotationZ.multiply(rotationY.multiply(rotationX))));
   },
 
   findScene: function() {

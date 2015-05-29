@@ -11,15 +11,15 @@
   <vr-scene class="scene">
     <vr-object class="world">
       <vr-object class="pivot">
-        <vr-object class="hud" z="400">
-          <vr-object x="-200" class="hud-button">
+        <vr-object class="hud" style="--z: 200">
+          <vr-object class="hud-button" style="--x: -200">
             <div>
               <h1>Hello, World<h1>
               <p>The Brown Lazy Fox...</p>
             </div>
           </vr-object>
-          <vr-object x="0" class="hud-button"><span>WebVR</span></vr-object>
-          <vr-model x="200" class="hud-cube"></vr-model>
+          <vr-object class="hud-button"><span>WebVR</span></vr-object>
+          <vr-model class="hud-cube" style="--x: 200"></vr-model>
         </vr-object>
       </vr-object>
     </vr-object>
@@ -69,13 +69,16 @@
     var lat = gui.add(latObj, 'lat', -180, 180).step(0.01);
     var long = gui.add(longObj, 'long', -180, 180).step(0.01);
     radius.onChange(function(value) {
-      hud.setAttribute('z', value)
+      //hud.setAttribute('z', value);
+      hud.style.setProperty('--z', value);
     });
     lat.onChange(function(value) {
-      pivot.setAttribute('rotY', -value)
+      //pivot.setAttribute('rotY', -value);
+      pivot.style.setProperty('--rotY', value);
     });
     long.onChange(function(value) {
-      pivot.setAttribute('rotX', -value)
+      //pivot.setAttribute('rotX', -value);
+      pivot.style.setProperty('--rotX', value);
     });
     var xObj = {
       x: 0,
@@ -86,10 +89,12 @@
     var x = gui.add(xObj, 'x', -500, 500);
     var y = gui.add(yObj, 'y', -500, 500);
     x.onChange(function(value) {
-      selectedButton.setAttribute('x', value)
+      selectedButton.style.setProperty('--x', value);
+      //selectedButton.setAttribute('x', value)
     });
     y.onChange(function(value) {
-      selectedButton.setAttribute('y', value)
+      selectedButton.style.setProperty('--y', value);
+      //selectedButton.setAttribute('y', value)
     });
 
     var world = document.querySelector('.world');
@@ -117,19 +122,23 @@
       var delta = 10;
       if (keys[65]) { // Left
         x -= delta;
-        world.setAttribute('x', x);
+        world.style.setProperty('--x', x);
+        // world.setAttribute('x', x);
       }
       if (keys[87]) { // Up
         z -= delta;
-        world.setAttribute('z', z);
+        world.style.setProperty('--z', z);
+        // world.setAttribute('z', z);
       }
       if (keys[68]) { // Right
         x += delta;
-        world.setAttribute('x', x);
+        world.style.setProperty('--x', x);
+        // world.setAttribute('x', x);
       }
       if (keys[83]) { // Down
         z += delta;
-        world.setAttribute('z', z);
+        world.style.setProperty('--z', z);
+        // world.setAttribute('z', z);
       }
 
       if (keys[90]) { // Down
@@ -138,17 +147,26 @@
         z = 0;
         rotX = 0;
         rotY = 0;
-        world.setAttribute('x', x);
-        world.setAttribute('y', y);
-        world.setAttribute('z', z);
-        world.setAttribute('rotX', rotY);
-        world.setAttribute('rotY', rotX);
+        world.style.setProperty('--x', x);
+        world.style.setProperty('--y', y);
+        world.style.setProperty('--z', z);
+
+        world.style.setProperty('--rotX', rotY);
+        world.style.setProperty('--rotY', rotX);
+
+        // world.setAttribute('x', x)
+        // world.setAttribute('y', y);
+        // world.setAttribute('z', z);
+        // world.setAttribute('rotX', rotY);
+        // world.setAttribute('rotY', rotX);
         radius.setValue(400);
         lat.setValue(0);
         long.setValue(0);
       }
-      world.setAttribute('rotX', rotY);
-      world.setAttribute('rotY', rotX);
+      // world.setAttribute('rotX', rotY);
+      // world.setAttribute('rotY', rotX);
+      world.style.setProperty('--rotX', rotY);
+      world.style.setProperty('--rotY', rotX);
       scene.animate();
       window.requestAnimationFrame(updatePositions);
     }

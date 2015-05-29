@@ -66,16 +66,17 @@ module.exports = component.register('vr-object', {
   },
 
   updateTransform: function() {
+    var elStyles = window.getComputedStyle(this);
     // Position
-    var x = this.position.x = this.getAttribute('x') || 0;
-    var y = this.position.y = this.getAttribute('y') || 0;
-    var z = this.position.z = this.getAttribute('z') || 0;
+    var x = elStyles.getPropertyValue('--x') || 0;
+    var y = elStyles.getPropertyValue('--y') || 0;
+    var z = elStyles.getPropertyValue('--z') || 0;
     var translation = new VR.Matrix4().makeTranslation(x, y, -z);
 
     // Orientation
-    var orientationX = this.orientation.x = this.getAttribute('rotX') || 0;
-    var orientationY = this.orientation.y = this.getAttribute('rotY') || 0;
-    var orientationZ = this.orientation.y = this.getAttribute('rotZ') || 0;
+    var orientationX = elStyles.getPropertyValue('--rotX') || 0;
+    var orientationY = elStyles.getPropertyValue('--rotY') || 0;
+    var orientationZ = elStyles.getPropertyValue('--rotZ') || 0;
     var rotX = VR.Math.degToRad(orientationX);
     var rotY = VR.Math.degToRad(orientationY);
     var rotZ = VR.Math.degToRad(orientationZ);

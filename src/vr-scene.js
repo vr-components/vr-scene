@@ -72,20 +72,18 @@ module.exports = component.register('vr-scene', {
   },
 
   setupCamera: function() {
+    var elStyles = window.getComputedStyle(this);
+    var fov = elStyles.getPropertyValue('--fov') || 45;
     var viewport = this.shadowRoot.querySelector('.viewport');
-    // DOM
-    var camera = this.shadowRoot.querySelector('vr-camera');
-    var fov = camera.getAttribute('fov');
-    var perspective = camera.perspective;
-    //this.style.perspective =  perspective + 'px';
+
+    // DOM camera
     var perspectiveMatrix = this.perspectiveMatrix(VR.Math.degToRad(45), this.offsetWidth / this.offsetHeight, 1, 5000);
     var scaled = perspectiveMatrix.clone().scale(new VR.Vector3(this.offsetWidth, this.offsetHeight, 1));
-    var style = this.getCSSMatrix( scaled );
+    var style = this.getCSSMatrix(scaled);
     viewport.style.transform = style;
 
-    // WebGL
-    var camera = this.camera = new THREE.PerspectiveCamera(45, this.offsetWidth / this.offsetHeight, 1, 5000);
-    camera.position.z = 0;
+    // WebGL camvera
+    this.camera = new THREE.PerspectiveCamera(45, this.offsetWidth / this.offsetHeight, 1, 5000);
   },
 
   perspectiveMatrix: function(fov, aspect, nearz, farz) {
@@ -123,8 +121,6 @@ module.exports = component.register('vr-scene', {
     var renderer = this.renderer = new THREE.WebGLRenderer( { canvas: canvas, antialias: true, alpha: true } );
     renderer.setSize( this.canvas.width, this.canvas.height );
     renderer.sortObjects = false;
-    //renderer.setClearColor( 0xff0000 );
-    //renderer.clear();
   },
 
   setupScene: function() {
@@ -178,7 +174,6 @@ module.exports = component.register('vr-scene', {
     </div>
 
       <style>
-
     :host {
       display: inline-block;
       width: 100%;
@@ -199,7 +194,6 @@ module.exports = component.register('vr-scene', {
       width: 100%;
       height: 100vh;
     }
-
     </style>`
 });
 
