@@ -26,26 +26,26 @@ module.exports = component.register('vr-camera', {
     var x = elStyles.getPropertyValue('--x') || 0;
     var y = elStyles.getPropertyValue('--y') || 0;
     var z = elStyles.getPropertyValue('--z') || 0;
-    var translation = new VR.Matrix4().makeTranslation(x, y, -z);
+    var translation = new THREE.Matrix4().makeTranslation(x, y, -z);
 
     // Orientation
     var orientationX = elStyles.getPropertyValue('--rotX') || 0;
     var orientationY = elStyles.getPropertyValue('--rotY') || 0;
     var orientationZ = elStyles.getPropertyValue('--rotZ') || 0;
-    var rotX = VR.Math.degToRad(orientationX);
-    var rotY = VR.Math.degToRad(orientationY);
-    var rotZ = VR.Math.degToRad(orientationZ);
-    var rotationX = new VR.Matrix4().makeRotationX(rotX);
-    var rotationY = new VR.Matrix4().makeRotationY(rotY);
-    var rotationZ = new VR.Matrix4().makeRotationX(rotZ);
+    var rotX = THREE.Math.degToRad(orientationX);
+    var rotY = THREE.Math.degToRad(orientationY);
+    var rotZ = THREE.Math.degToRad(orientationZ);
+    var rotationX = new THREE.Matrix4().makeRotationX(rotX);
+    var rotationY = new THREE.Matrix4().makeRotationY(rotY);
+    var rotationZ = new THREE.Matrix4().makeRotationX(rotZ);
     var matrixCSS = rotationZ.multiply(rotationY.multiply(rotationX.multiply(translation)));
 
     this.style.transform = 'translate3d(-50%, -50%, 0) ' + this.getCameraCSSMatrix(matrixCSS);
 
     // Matrix threejs
-    rotationX = new VR.Matrix4().makeRotationX(-rotX);
-    rotationY = new VR.Matrix4().makeRotationY(rotY);
-    rotationZ = new VR.Matrix4().makeRotationX(rotZ);
+    rotationX = new THREE.Matrix4().makeRotationX(-rotX);
+    rotationY = new THREE.Matrix4().makeRotationY(rotY);
+    rotationZ = new THREE.Matrix4().makeRotationX(rotZ);
     var matrix = rotationZ.multiply(rotationY.multiply(rotationX.multiply(translation)));
 
     var object3D = this.object3D;

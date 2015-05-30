@@ -76,8 +76,8 @@ module.exports = component.register('vr-scene', {
     var viewport = this.shadowRoot.querySelector('.viewport');
 
     // DOM camera
-    var perspectiveMatrix = this.perspectiveMatrix(VR.Math.degToRad(45), this.offsetWidth / this.offsetHeight, 1, 5000);
-    var scaled = perspectiveMatrix.clone().scale(new VR.Vector3(this.offsetWidth, this.offsetHeight, 1));
+    var perspectiveMatrix = this.perspectiveMatrix(THREE.Math.degToRad(45), this.offsetWidth / this.offsetHeight, 1, 5000);
+    var scaled = perspectiveMatrix.clone().scale(new THREE.Vector3(this.offsetWidth, this.offsetHeight, 1));
     var style = this.getCSSMatrix(scaled);
     viewport.style.transform = style;
 
@@ -86,8 +86,7 @@ module.exports = component.register('vr-scene', {
   },
 
   perspectiveMatrix: function(fov, aspect, nearz, farz) {
-
-    var matrix = new VR.Matrix4();
+    var matrix = new THREE.Matrix4();
     var range = Math.tan(fov * 0.5) * nearz;
 
     matrix.elements[0] = (2 * nearz) / ((range * aspect) - (-range * aspect));
@@ -107,7 +106,6 @@ module.exports = component.register('vr-scene', {
     matrix.elements[14] = -(2 * farz * nearz) / (farz - nearz);
     matrix.elements[15] = 0;
     return matrix.transpose();
-
   },
 
   setupRenderer: function() {
