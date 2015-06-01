@@ -25,6 +25,34 @@ body {
  content: "";
 }*/
 
+@keyframes bobble {
+    0% {
+        --x: 0;
+        transform: translate3d(0px, 0px, 0px);
+        animation-timing-function: ease-in;
+    }
+    50% {
+        --x: 100;
+        transform: translate3d(0px, 10px, 0px);
+        animation-timing-function: ease-out;
+    }
+    100% {
+        --x: 0;
+        transform: translate3d(0px, 0px, 0px);
+    }
+}
+
+.peak-label {
+  color: white;
+  width: 120px;
+  height: 50px;
+  font-size: 20pt;
+  padding: 15px;
+  background-color: #0480D1;
+}
+
+
+
 .hud-button {
   color: white;
   width: 120px;
@@ -34,12 +62,16 @@ body {
   padding: 15px;
 }
 
-.hud-button:hover {
+.pivot {
+  animation: bobble 2s infinite;
+}
+
+.hud-button:hover,  .peak-label:hover {
   background-color: yellow;
   color: #0480D1;
 }
 
-.hud-model {
+.hud-cube {
   width: 120px;
   height: 120px;
   background-color: transparent;

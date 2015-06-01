@@ -81,8 +81,8 @@ module.exports = component.register('vr-scene', {
     var style = this.getCSSMatrix(scaled);
     viewport.style.transform = style;
 
-    // WebGL camvera
-    this.camera = new THREE.PerspectiveCamera(45, this.offsetWidth / this.offsetHeight, 1, 5000);
+    // WebGL camera
+    this.camera = new THREE.PerspectiveCamera(45, this.offsetWidth / this.offsetHeight, 1, 50000);
   },
 
   perspectiveMatrix: function(fov, aspect, nearz, farz) {
