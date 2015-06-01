@@ -40,7 +40,7 @@ module.exports = component.register('vr-camera', {
     var rotationZ = new THREE.Matrix4().makeRotationX(rotZ);
     var matrixCSS = rotationZ.multiply(rotationY.multiply(rotationX.multiply(translation)));
 
-    this.style.transform = 'translate3d(-50%, -50%, 0) ' + this.getCameraCSSMatrix(matrixCSS);
+    this.style.transform = 'translate3d(-50%, -50%, 0) ' + this.getCSSMatrix(matrixCSS);
 
     // Matrix threejs
     rotationX = new THREE.Matrix4().makeRotationX(-rotX);

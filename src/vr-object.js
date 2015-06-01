@@ -35,7 +35,19 @@ module.exports = component.register('vr-object', {
     return Math.abs( value ) < 0.000001 ? 0 : value;
   },
 
-  getCameraCSSMatrix: function (matrix) {
+  update: function() { /* NOOP */ },
+
+  updateChildren: function() {
+    var child;
+    var i;
+    for (i = 0; i < this.children.length; ++i) {
+      child = this.children[i];
+      if (typeof child.update == 'function') { child.update(); }
+      if (typeof child.updateChildren == 'function') { child.updateChildren(); }
+    }
+  },
+
+  getCSSMatrix: function (matrix) {
     var epsilon = this.epsilon;
     var elements = matrix.elements;
 
@@ -78,7 +90,7 @@ module.exports = component.register('vr-object', {
     var rotationY = new THREE.Matrix4().makeRotationY(rotY);
     var rotationZ = new THREE.Matrix4().makeRotationX(rotZ);
 
-    this.style.transform = 'translate3d(-50%, -50%, 0) ' + this.getCameraCSSMatrix(translation.multiply(rotationZ.multiply(rotationY.multiply(rotationX))));
+    this.style.transform = 'translate3d(-50%, -50%, 0) ' + this.getCSSMatrix(translation.multiply(rotationZ.multiply(rotationY.multiply(rotationX))));
     this.object3D.position.set(x, -y, -z);
     this.object3D.rotation.order = 'YXZ';
     this.object3D.rotation.set(-rotX, rotY, 0);

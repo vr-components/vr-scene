@@ -44,10 +44,11 @@ body {
 
 .peak-label {
   color: white;
-  width: 120px;
-  height: 50px;
+  width: 200px;
+  height: 25px;
   font-size: 20pt;
   padding: 15px;
+  text-align: center;
   background-color: #0480D1;
 }
 

@@ -34,6 +34,7 @@ module.exports = component.register('vr-scene', {
       return obj;
     }
     obj = el.object3D = el.object3D || provided_obj || new THREE.Object3D();
+    obj.scene = this;
     if (objParent && objParent !== this) {
       objParent = this.addObject(el.parentNode);
       objParent.add(obj);
@@ -131,6 +132,16 @@ module.exports = component.register('vr-scene', {
     }
   },
 
+  updateChildren: function() {
+    var child;
+    var i;
+    for (i = 0; i < this.children.length; ++i) {
+      child = this.children[i];
+      if (typeof child.update == 'function') { child.update(); }
+      if (typeof child.updateChildren == 'function') { child.updateChildren(); }
+    }
+  },
+
   resizeCanvas: function(renderer, camera){
     var canvas = this.canvas;
     // Make it visually fill the positioned parent
@@ -153,6 +164,7 @@ module.exports = component.register('vr-scene', {
 
   animate: function() {
     var self = this;
+    this.updateChildren();
     self.renderer.render(self.scene, self.camera);
   },
 
@@ -165,9 +177,7 @@ module.exports = component.register('vr-scene', {
   template: `
     <canvas width="100%" height="100%"></canvas>
     <div class="viewport">
-      <vr-camera>
-          <content></content>
-      </vr-camera>
+      <content></content>
     </div>
 
       <style>
