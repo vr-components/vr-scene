@@ -106,12 +106,14 @@ module.exports = component.register('vr-object', {
 
   template: `
     <content></content>
+    <style>
     :host {
       left: 50%;
       top: 50%;
       position: absolute;
       transform-style: preserve-3d;
     }
+    </style>
   `
 });
 
