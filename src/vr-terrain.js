@@ -50,7 +50,7 @@ module.exports = component.register('vr-terrain', {
       var sign1 = (Math.random()*10).toFixed(0) % 2 === 0? -1: 1;
       var sign2 = (Math.random()*10).toFixed(0) % 2 === 0? -1: 1;
       if (noiseValue > 80) {
-        label = document.createElement('vr-object');
+        label = document.createElement('vr-billboard');
         label.classList.add('peak-label');
         label.style.setProperty('--x',  sign1 * (Math.random() * 1024));
         label.style.setProperty('--y',  sign2 * (Math.random() * 1024));

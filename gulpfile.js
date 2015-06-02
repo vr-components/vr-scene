@@ -23,6 +23,7 @@ gulp.task('build', function() {
     'src/vr-object.js',
     'src/vr-camera.js',
     'src/vr-model.js',
+    'src/vr-billboard.js',
     'src/vr-terrain.js'
     ])
     .pipe(gulpif(debug, sourcemaps.init()))

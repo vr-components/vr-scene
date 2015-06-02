@@ -17,7 +17,7 @@ var debug = 0 ? console.log.bind(console) : function() {};
  * Exports
  */
 
-module.exports = component.register('vr-terrain', {
+module.exports = component.register('vr-billboard', {
   extends: VRObject.prototype,
 
   created: function() {
@@ -57,4 +57,4 @@ module.exports = component.register('vr-terrain', {
 });})(typeof define=='function'&&define.amd?define
 :(function(n,w){'use strict';return typeof module=='object'?function(c){
 c(require,exports,module);}:function(c){var m={exports:{}};c(function(n){
-return w[n];},m.exports,m);w[n]=m.exports;};})('VRTerrain',this));
+return w[n];},m.exports,m);w[n]=m.exports;};})('VRBillboard',this));
