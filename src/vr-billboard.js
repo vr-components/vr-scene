@@ -25,12 +25,13 @@ module.exports = component.register('vr-billboard', {
   },
 
   update: function() {
+    this.updateTransform();
     // var camera = this.scene.camera;
 
     // // http://swiftcoder.wordpress.com/2008/11/25/constructing-a-billboard-matrix/
     // var matrix = new THREE.Matrix4();
     // matrix.copy( camera.matrixWorldInverse );
-    // //matrix.transpose();
+    // matrix.transpose();
     // //matrix.copyPosition( object.matrixWorld );
     // //matrix.scale( object.scale );
 
@@ -39,8 +40,44 @@ module.exports = component.register('vr-billboard', {
     // matrix.elements[ 11 ] = 0;
     // matrix.elements[ 15 ] = 1;
 
-    // this.style.transform = this.getCSSMatrix( matrix );
+    // this.style.transform = 'translate3d(-50%, -50%, 0) ' + this.getCSSMatrix( matrix );
+  },
 
+  updateTransform: function() {
+    var camera = document.querySelector('vr-camera');
+    var matrix = new THREE.Matrix4();
+    matrix.copy( matrix.getInverse(camera.object3D.matrixWorld) );
+    matrix.copy( camera.object3D.matrixWorld );
+
+    matrix.transpose();
+
+    matrix.elements[ 3 ] = 0;
+    matrix.elements[ 7 ] = 0;
+    matrix.elements[ 11 ] = 0;
+    matrix.elements[ 15 ] = 1;
+
+    // Position
+    var x = this.style.getPropertyValue('--x') || 0;
+    var y = this.style.getPropertyValue('--y') || 0;
+    var z = this.style.getPropertyValue('--z') || 0;
+    var translation = new THREE.Matrix4().makeTranslation(x, y, -z);
+
+    // Orientation
+    var orientationX = this.style.getPropertyValue('--rotX') || 0;
+    var orientationY = this.style.getPropertyValue('--rotY') || 0;
+    var orientationZ = this.style.getPropertyValue('--rotZ') || 0;
+
+    var rotX = THREE.Math.degToRad(orientationX);
+    var rotY = THREE.Math.degToRad(orientationY);
+    var rotZ = THREE.Math.degToRad(orientationZ);
+    var rotationX = new THREE.Matrix4().makeRotationX(rotX);
+    var rotationY = new THREE.Matrix4().makeRotationY(rotY);
+    var rotationZ = new THREE.Matrix4().makeRotationX(rotZ);
+
+    this.style.transform = 'translate3d(-50%, -50%, 0) ' + this.getCSSMatrix(translation.multiply(rotationZ.multiply(rotationY.multiply(rotationX.multiply(matrix)))));
+    this.object3D.position.set(x, -y, -z);
+    this.object3D.rotation.order = 'YXZ';
+    this.object3D.rotation.set(-rotX, rotY, 0);
   },
 
 });

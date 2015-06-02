@@ -55,7 +55,7 @@ module.exports = component.register('vr-terrain', {
         label.style.setProperty('--x',  sign1 * (Math.random() * 1024));
         label.style.setProperty('--y',  sign2 * (Math.random() * 1024));
         label.style.setProperty('--z',  -noiseValue - 50);
-        label.style.setProperty('--rotX',  -hud.style.getPropertyValue("--rotX"));
+        label.style.setProperty('--rotX',  -90);
         label.innerHTML = "Landmark " + i;
         hud.appendChild(label);
         max-=1;
