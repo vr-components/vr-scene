@@ -43,15 +43,6 @@ module.exports = component.register('vr-billboard', {
 
   },
 
-  // template: `
-  //   <content></content>
-  //   :host {
-  //     left: 50%;
-  //     top: 50%;
-  //     position: absolute;
-  //     transform-style: preserve-3d;
-  //   }
-  //`
 });
 
 });})(typeof define=='function'&&define.amd?define
