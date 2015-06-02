@@ -12,7 +12,7 @@
     <vr-camera class="camera">
       <vr-object class="pivot">
         <vr-object class="hud" style="--z: 1024; --rotX: 75">
-          <vr-terrain class="hud-cube" style="--x: 100;"></vr-terrain>
+          <vr-terrain class="hud-cube"></vr-terrain>
         </vr-object>
       </vr-object>
     </vr-camera>
@@ -58,32 +58,9 @@
     };
     var gui = new dat.GUI();
     var radius = gui.add(distObj, 'distance', 0, 5000);
-    var lat = gui.add(latObj, 'lat', -180, 180).step(0.01);
-    var long = gui.add(longObj, 'long', -180, 180).step(0.01);
     radius.onChange(function(value) {
       hud.style.setProperty('--z', value);
     });
-    lat.onChange(function(value) {
-      pivot.style.setProperty('--rotY', value);
-    });
-    long.onChange(function(value) {
-      pivot.style.setProperty('--rotX', value);
-    });
-    var xObj = {
-      x: 0,
-    };
-    var yObj = {
-      y: 0,
-    };
-    var x = gui.add(xObj, 'x', -500, 500);
-    var y = gui.add(yObj, 'y', -500, 500);
-    x.onChange(function(value) {
-      selectedButton.style.setProperty('--x', value);
-    });
-    y.onChange(function(value) {
-      selectedButton.style.setProperty('--y', value);
-    });
-
     var camera = document.querySelector('.camera');
     var x = 0;
     var z = 0;
@@ -140,8 +117,6 @@
         camera.style.setProperty('--rotY', rotX * smooth);
 
         radius.setValue(400);
-        lat.setValue(0);
-        long.setValue(0);
       }
       camera.style.setProperty('--rotX', rotY);
       camera.style.setProperty('--rotY', rotX);
