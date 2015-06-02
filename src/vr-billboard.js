@@ -21,8 +21,7 @@ module.exports = component.register('vr-billboard', {
   extends: VRObject.prototype,
 
   created: function() {
-    var self = this;
-    VRObject.prototype.created.call(self);
+    VRObject.prototype.created.call(this);
   },
 
   update: function() {
@@ -45,6 +44,7 @@ module.exports = component.register('vr-billboard', {
   },
 
   template: `
+    <content></content>
     :host {
       left: 50%;
       top: 50%;
