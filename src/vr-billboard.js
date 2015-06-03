@@ -22,6 +22,7 @@ module.exports = component.register('vr-billboard', {
 
   created: function() {
     VRObject.prototype.created.call(this);
+    this.updateTransform();
   },
 
   update: function() {

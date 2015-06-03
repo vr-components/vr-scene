@@ -31,7 +31,8 @@ module.exports = component.register('vr-terrain', {
 
   setupScene: function(onLoaded) {
     var self = this;
-    new Terrain(noise, 1024, 2, 64, function(model) {;
+    this.terrainSize = 1024;
+    new Terrain(noise, this.terrainSize, 2, 64, function(model) {;
       self.object3D = model;
       onLoaded();
     });
@@ -39,7 +40,7 @@ module.exports = component.register('vr-terrain', {
 
   generateLabels: function(noise) {
     var label;
-    var max = 20;
+    var max = 15;
     for(var i = 0; i < noise.image.data.length; ++i) {
       var noiseValue = noise.image.data[i];
       var sign1 = (Math.random()*10).toFixed(0) % 2 === 0? -1: 1;
@@ -47,8 +48,8 @@ module.exports = component.register('vr-terrain', {
       if (noiseValue > 80) {
         label = document.createElement('vr-billboard');
         label.classList.add('peak-label');
-        label.style.setProperty('--x',  sign1 * (Math.random() * 1024));
-        label.style.setProperty('--y',  sign2 * (Math.random() * 1024));
+        label.style.setProperty('--x',  sign1 * (Math.random() * this.terrainSize));
+        label.style.setProperty('--y',  sign2 * (Math.random() * this.terrainSize));
         label.style.setProperty('--z',  -noiseValue);
         label.style.setProperty('--rotX',  -90);
         label.innerHTML = "Landmark " + i;
