@@ -93,7 +93,7 @@ module.exports = component.register('vr-object', {
     this.style.transform = 'translate3d(-50%, -50%, 0) ' + this.getCSSMatrix(translation.multiply(rotationZ.multiply(rotationY.multiply(rotationX))));
     this.object3D.position.set(x, -y, -z);
     this.object3D.rotation.order = 'YXZ';
-    this.object3D.rotation.set(-rotX, rotY, 0);
+    this.object3D.rotation.set(-rotX, rotY, rotZ);
   },
 
   findScene: function() {

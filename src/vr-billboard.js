@@ -26,21 +26,6 @@ module.exports = component.register('vr-billboard', {
 
   update: function() {
     this.updateTransform();
-    // var camera = this.scene.camera;
-
-    // // http://swiftcoder.wordpress.com/2008/11/25/constructing-a-billboard-matrix/
-    // var matrix = new THREE.Matrix4();
-    // matrix.copy( camera.matrixWorldInverse );
-    // matrix.transpose();
-    // //matrix.copyPosition( object.matrixWorld );
-    // //matrix.scale( object.scale );
-
-    // matrix.elements[ 3 ] = 0;
-    // matrix.elements[ 7 ] = 0;
-    // matrix.elements[ 11 ] = 0;
-    // matrix.elements[ 15 ] = 1;
-
-    // this.style.transform = 'translate3d(-50%, -50%, 0) ' + this.getCSSMatrix( matrix );
   },
 
   updateTransform: function() {
@@ -77,8 +62,8 @@ module.exports = component.register('vr-billboard', {
     this.style.transform = 'translate3d(-50%, -50%, 0) ' + this.getCSSMatrix(translation.multiply(rotationZ.multiply(rotationY.multiply(rotationX.multiply(matrix)))));
     this.object3D.position.set(x, -y, -z);
     this.object3D.rotation.order = 'YXZ';
-    this.object3D.rotation.set(-rotX, rotY, 0);
-  },
+    this.object3D.rotation.set(-rotX, rotY, rotZ);
+  }
 
 });
 

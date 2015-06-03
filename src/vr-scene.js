@@ -77,7 +77,7 @@ module.exports = component.register('vr-scene', {
     var viewport = this.shadowRoot.querySelector('.viewport');
 
     // DOM camera
-    var perspectiveMatrix = this.perspectiveMatrix(THREE.Math.degToRad(45), this.offsetWidth / this.offsetHeight, 1, 5000);
+    var perspectiveMatrix = this.perspectiveMatrix(THREE.Math.degToRad(45), this.offsetWidth / this.offsetHeight, 1, 50000);
     var scaled = perspectiveMatrix.clone().scale(new THREE.Vector3(this.offsetWidth, this.offsetHeight, 1));
     var style = this.getCSSMatrix(scaled);
     viewport.style.transform = style;

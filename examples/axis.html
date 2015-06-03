@@ -4,13 +4,30 @@
   <meta charset="utf-8">
   <title>VR HUD Layout</title>
   <meta name="description" content="Demo for VR HUD layout">
-  <link rel="stylesheet" type="text/css" href="style/main.css" />
+  <style>
+  html, body {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-image:
+    radial-gradient(
+        #0B6790,
+        #14364A
+      );
+  }
+  </style>
 </head>
 
 <body>
   <vr-scene class="scene">
-    <vr-camera class="camera" style="--z: 1000; --y: 400; --rotY: -30">
-      <vr-terrain style="--rotX: 90;"></vr-terrain>
+    <vr-camera class="camera" style="--z: 500">
+      <vr-object class="pivot">
+        <vr-axis-gl></vr-axis-gl>
+        <vr-axis-dom></vr-axis-dom>
+      </vr-object>
     </vr-camera>
   </vr-scene>
   <script src="js/main.js"></script>
@@ -28,15 +45,7 @@
   <script src="../build/vr-components.js"></script>
   <script>
     var scene = document.querySelector("vr-scene");
-    var camera = document.querySelector('.camera');
-    var cameraInit = {
-      x: parseInt(camera.style.getPropertyValue('--x') || 0),
-      y: parseInt(camera.style.getPropertyValue('--y') || 0),
-      z: parseInt(camera.style.getPropertyValue('--z') || 0),
-      rotX: parseInt(camera.style.getPropertyValue('--rotX') || 0),
-      rotY: parseInt(camera.style.getPropertyValue('--rotY') || 0),
-      rotZ: parseInt(camera.style.getPropertyValue('--rotZ') || 0)
-    };
+    var camera = document.querySelector('.pivot');
     var distObj = {
       distance: 0,
     };
@@ -47,11 +56,11 @@
       long: 0,
     };
     var gui = new dat.GUI();
-    var radius = gui.add(distObj, 'distance', 0, 5000);
-    radius.onChange(function(value) {
+    var distance = gui.add(distObj, 'distance', 0, 5000);
+    distance.onChange(function(value) {
       camera.style.setProperty('--z', value);
     });
-    radius.setValue(camera.style.getPropertyValue('--z'));
+    distance.setValue(camera.style.getPropertyValue('--z'));
     var x = parseInt(camera.style.getPropertyValue('--x')) || 0;
     var z = parseInt(camera.style.getPropertyValue('--z')) || 0;
     var rotX = parseInt(camera.style.getPropertyValue('--rotX')) || 0;
@@ -93,24 +102,23 @@
       }
 
       if (keys[90]) { // Z
-        x = cameraInit.x;
-        y = cameraInit.y;
-        z = cameraInit.z;
-        rotX = cameraInit.rotX;
-        rotY = cameraInit.rotY;
-        rotZ = cameraInit.rotZ;
+        x = 0;
+        y = 0;
+        z = 0;
+        rotX = 0;
+        rotY = 0;
+        var smooth = 0.4;
         camera.style.setProperty('--x', x);
         camera.style.setProperty('--y', y);
         camera.style.setProperty('--z', z);
 
-        camera.style.setProperty('--rotX', rotY);
-        camera.style.setProperty('--rotY', rotX);
+        camera.style.setProperty('--rotX', rotY * smooth);
+        camera.style.setProperty('--rotY', rotX * smooth);
 
-        radius.setValue(cameraInit.z);
-      } else {
-        camera.style.setProperty('--rotX', rotY);
-        camera.style.setProperty('--rotY', rotX);
+        distance.setValue(400);
       }
+      camera.style.setProperty('--rotX', rotY);
+      camera.style.setProperty('--rotY', rotX);
       scene.animate();
       window.requestAnimationFrame(updatePositions);
     }

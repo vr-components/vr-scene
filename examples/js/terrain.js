@@ -117,7 +117,7 @@
                                                       this.resolution,
                                                       edgeMorph );
     var plane = new THREE.Mesh( this.tileGeometry, terrainMaterial );
-    //plane.frustumCulled = true;
+    plane.frustumCulled = false;
     this.add( plane );
   };
 

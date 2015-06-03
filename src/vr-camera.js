@@ -46,23 +46,15 @@ module.exports = component.register('vr-camera', {
     rotationX = new THREE.Matrix4().makeRotationX(-rotX);
     rotationY = new THREE.Matrix4().makeRotationY(rotY);
     rotationZ = new THREE.Matrix4().makeRotationX(rotZ);
+    translation = new THREE.Matrix4().makeTranslation(x, -y, -z);
     var matrix = rotationZ.multiply(rotationY.multiply(rotationX.multiply(translation)));
 
     var object3D = this.object3D;
-    object3D.matrixAutoUpdate = false;
     object3D.matrix = matrix;
+    object3D.matrixAutoUpdate = false;
+    object3D.matrixWorldNeedsUpdate = true;
+  }
 
-  },
-
-  template: `
-    <content></content>
-    :host {
-      left: 50%;
-      top: 50%;
-      position: absolute;
-      transform-style: preserve-3d;
-    }
-  `
 });
 
 });})(typeof define=='function'&&define.amd?define
