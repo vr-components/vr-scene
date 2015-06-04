@@ -174,6 +174,18 @@ module.exports = component.register('vr-scene', {
     }
   },
 
+  getVRDevices: function (callback) {
+    return new Promise(function (resolve, reject) {
+      if (navigator.getVRDevices) {
+        navigator.getVRDevices().then(function (devices) {
+          resolve(devices);
+        });
+      } else {
+        reject('No VR devices found.');
+      }
+    });
+  },
+
   template: `
     <canvas width="100%" height="100%"></canvas>
     <div class="viewport">

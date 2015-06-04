@@ -67,7 +67,7 @@ module.exports = component.register('vr-lambo', {
       directionalLight.position.set( -2, 1.2, -10 ).normalize();
       self.scene.scene.add( directionalLight );
 
-      pointLight = new THREE.PointLight( 0xffaa00, 2 );
+      var pointLight = new THREE.PointLight( 0xffaa00, 2 );
       pointLight.position.set( 2000, 1200, 10000 );
       self.scene.scene.add( pointLight );
     }
