@@ -159,8 +159,8 @@
       if (!rotationEnabled) {
         return;
       }
-      var deltaX = event.clientX - lastMouseX;
-      var deltaY = event.clientY - lastMouseY;
+      var deltaX = (event.clientX - lastMouseX) * 0.25;
+      var deltaY = (event.clientY - lastMouseY) * 0.25;
       rotX += deltaX;
       rotY += deltaY;
       lastMouseX = event.clientX;

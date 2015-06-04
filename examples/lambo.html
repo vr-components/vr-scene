@@ -18,19 +18,35 @@
         #14364A
       );
   }
+
+  .label {
+    width: 500px;
+    height: 500px;
+    font-size: 50pt;
+    padding: 15px;
+    background-color: #0480D1;
+    color: white;
+    text-align: center;
+  }
   </style>
 </head>
 
 <body>
   <vr-scene class="scene">
-    <vr-camera class="camera" style="--z: 500">
-      <vr-object class="pivot">
-        <vr-axis-gl></vr-axis-gl>
-        <vr-axis-dom></vr-axis-dom>
-      </vr-object>
+    <vr-camera class="camera">
+      <vr-object class="pivot" style="--z: 2000">
+        <vr-object class="label" style="--x: -800">
+          CLOSE
+        </vr-object>
+        <vr-object class="label" style="--z: 3000; --x: 1200; --y: -800">
+          FAR
+        </vr-object>
+        <vr-lambo></vr-lambo>
+      <vr-object>
     </vr-camera>
   </vr-scene>
   <script src="js/main.js"></script>
+  <script src="../lib/vendor/three.js"></script>
   <script src="js/type.js"></script>
   <script src="js/ajax.js"></script>
   <script src="js/shader.js"></script>
@@ -45,6 +61,14 @@
   <script>
     var scene = document.querySelector("vr-scene");
     var camera = document.querySelector('.pivot');
+    var cameraInit = {
+      x: parseInt(camera.style.getPropertyValue('--x') || 0),
+      y: parseInt(camera.style.getPropertyValue('--y') || 0),
+      z: parseInt(camera.style.getPropertyValue('--z') || 0),
+      rotX: parseInt(camera.style.getPropertyValue('--rotX') || 0),
+      rotY: parseInt(camera.style.getPropertyValue('--rotY') || 0),
+      rotZ: parseInt(camera.style.getPropertyValue('--rotZ') || 0)
+    };
     var distObj = {
       distance: 0,
     };
@@ -59,9 +83,9 @@
     distance.onChange(function(value) {
       camera.style.setProperty('--z', value);
     });
-    distance.setValue(camera.style.getPropertyValue('--z'));
     var x = parseInt(camera.style.getPropertyValue('--x')) || 0;
     var z = parseInt(camera.style.getPropertyValue('--z')) || 0;
+    distance.setValue(z);
     var rotX = parseInt(camera.style.getPropertyValue('--rotX')) || 0;
     var rotY = parseInt(camera.style.getPropertyValue('--rotY')) || 0;
     var lastMouseX;
@@ -101,23 +125,24 @@
       }
 
       if (keys[90]) { // Z
-        x = 0;
-        y = 0;
-        z = 0;
-        rotX = 0;
-        rotY = 0;
-        var smooth = 0.4;
+        x = cameraInit.x;
+        y = cameraInit.y;
+        z = cameraInit.z;
+        rotX = cameraInit.rotX;
+        rotY = cameraInit.rotY;
+        rotZ = cameraInit.rotZ;
         camera.style.setProperty('--x', x);
         camera.style.setProperty('--y', y);
         camera.style.setProperty('--z', z);
 
-        camera.style.setProperty('--rotX', rotY * smooth);
-        camera.style.setProperty('--rotY', rotX * smooth);
+        camera.style.setProperty('--rotX', rotY);
+        camera.style.setProperty('--rotY', rotX);
 
-        distance.setValue(400);
+        distance.setValue(cameraInit.z);
+      } else {
+        camera.style.setProperty('--rotX', rotY);
+        camera.style.setProperty('--rotY', rotX);
       }
-      camera.style.setProperty('--rotX', rotY);
-      camera.style.setProperty('--rotY', rotX);
       scene.animate();
       window.requestAnimationFrame(updatePositions);
     }
@@ -134,10 +159,10 @@
       if (!rotationEnabled) {
         return;
       }
-      var deltaX = event.clientX - lastMouseX;
-      var deltaY = event.clientY - lastMouseY;
+      var deltaX = (event.clientX - lastMouseX) * 0.25;
+      var deltaY = (event.clientY - lastMouseY) * 0.25;
       rotX += deltaX;
-      rotY += deltaY;
+      rotY -= deltaY;
       lastMouseX = event.clientX;
       lastMouseY = event.clientY;
     }, true);

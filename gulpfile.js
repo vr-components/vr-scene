@@ -18,6 +18,7 @@ var watch = flags.watch;
 
 gulp.task('build', function() {
   return gulp.src([
+    'lib/vendor/BinaryLoader.js',
     'lib/gaia-component.js',
     'src/vr-scene.js',
     'src/vr-object.js',
@@ -26,7 +27,8 @@ gulp.task('build', function() {
     'src/vr-billboard.js',
     'src/vr-terrain.js',
     'src/vr-axis-gl.js',
-    'src/vr-axis-dom.js'
+    'src/vr-axis-dom.js',
+    'src/vr-lambo.js'
     ])
     .pipe(gulpif(debug, sourcemaps.init()))
     .pipe(gulpif(production, uglify()))
