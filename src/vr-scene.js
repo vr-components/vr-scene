@@ -260,7 +260,6 @@ module.exports = component.register('vr-scene', {
 
     canvas {
       position: absolute;
-      transform-style: preserve-3d;
       width: 100%;
       height: 100vh;
     }
