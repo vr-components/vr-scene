@@ -61,11 +61,6 @@
   <script>
     var scene = document.querySelector("vr-scene");
     var camera = document.querySelector('.pivot');
-    // var iframe = document.querySelector("iframe");
-    // iframe.onload = function() {
-    //   var content = (iframe.contentWindow || iframe.contentDocument);
-    //   content.body.style.backgroundColor = "red"
-    // };
 
     var cameraInit = {
       x: parseInt(camera.style.getPropertyValue('--x') || 0),
@@ -102,6 +97,9 @@
     // key events
     window.addEventListener('keydown', function(event) {
       keys[event.keyCode] = true;
+      if (event.keyCode === 70) {
+        scene.startVR();
+      }
     }, false);
 
     window.addEventListener('keyup', function(event) {
@@ -172,13 +170,6 @@
       lastMouseX = event.clientX;
       lastMouseY = event.clientY;
     }, true);
-
-    var vrDevices;
-    scene.getVRDevices().then(function (devices) {
-      vrDevices = devices;
-    })['catch'](function (err) {
-      console.warn(err);
-    });
 
   </script>
 </body>

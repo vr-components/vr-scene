@@ -21,10 +21,14 @@ module.exports = component.register('vr-scene', {
   extends: HTMLDivElement.prototype,
 
   created: function() {
+    var processDevices = this.processDevices.bind(this);
     this.setupShadowRoot();
     this.setupRenderer();
     this.setupScene();
     this.setupCamera();
+    this.getVRDevices().then(processDevices)['catch'](function (err) {
+      console.warn(err);
+    });
   },
 
   addObject: function(el, provided_obj) {
@@ -174,15 +178,58 @@ module.exports = component.register('vr-scene', {
     }
   },
 
-  getVRDevices: function (callback) {
+  filterInvalidDevices: function(devices) {
+    var oculusDevices = devices.filter(function (device) {
+      return device.deviceName.toLowerCase().indexOf('oculus') !== -1;
+    });
+
+    if (oculusDevices.length >= 1) {
+      return devices.filter(function (device) {
+        return device.deviceName.toLowerCase().indexOf('cardboard') === -1;
+      });
+    } else {
+      return devices;
+    }
+  },
+
+   processDevices: function(devices) {
+      devices = this.filterInvalidDevices(devices);
+
+      var headset = undefined;
+      var position = undefined;
+
+      for (var i = 0; i < devices.length; i++) {
+        var device = devices[i];
+        if (device instanceof HMDVRDevice) {
+          headset = device;
+        }
+        if (device instanceof PositionSensorVRDevice) {
+          position = device;
+        }
+        if (position && headset) {
+          this.vr = {
+            headset: headset,
+            position: position
+          };
+        }
+      }
+  },
+
+  getVRDevices: function(callback) {
     return new Promise(function (resolve, reject) {
       if (navigator.getVRDevices) {
         navigator.getVRDevices().then(function (devices) {
           resolve(devices);
-        });
+        }, reject);
       } else {
         reject('No VR devices found.');
       }
+    });
+  },
+
+  startVR: function() {
+    this.mozRequestFullScreen({
+      vrDisplay: this.vr.headset
     });
   },
 
@@ -192,16 +239,20 @@ module.exports = component.register('vr-scene', {
       <content></content>
     </div>
 
-      <style>
+    <style>
     :host {
       display: inline-block;
       width: 100%;
       height: 100vh;
+      background-image:
+      radial-gradient(
+        #0B6790,
+        #14364A
+      );
+      transform: translate3d(0, 0, 0);
     }
 
     .viewport {
-      position: relative;
-      box-sizing: border-box;
       transform-style: preserve-3d;
       width: 100%;
       height: 100vh;
