@@ -228,7 +228,10 @@ module.exports = component.register('vr-scene', {
   },
 
   startVR: function() {
-    this.mozRequestFullScreen({
+    var container = document.querySelector('#container');
+    console.log('heree-----', container);
+
+    container.mozRequestFullScreen({
       vrDisplay: this.vr.headset
     });
   },

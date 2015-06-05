@@ -29,22 +29,61 @@
     text-align: center;
   }
 
+  #fs {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+  }
+
   </style>
+  <script>
+  var vrDevices = {};
+
+  function start() {
+    var fsButton = document.querySelector('#fs');
+    var container = document.querySelector('#container');
+
+    fsButton.addEventListener('click', function() {
+      container.mozRequestFullScreen({ vrDisplay: vrDevices.headset });
+    })
+
+    window.addEventListener('resize', function(e) {
+      console.log('window Height = container Height', window.innerHeight == container.offsetHeight)
+    })
+
+  }
+
+  navigator.getVRDevices().then(function(devices) {
+    vrDevices.headset = devices[0];
+    vrDevices.position = devices[1];
+    
+    start();
+  });
+  </script>
 </head>
 
 <body>
-  <vr-scene class="scene">
-    <vr-camera class="camera">
-      <vr-object class="pivot" style="--z: 2000">
-        <vr-object class="label" style="--x: -600">
-        <iframe src="http://en.wikipedia.org/wiki/Bugatti_Veyron" width="100%" height="100%">
-          <p>Your browser does not support iframes.</p>
-        </iframe>
-        </vr-object>
-        <vr-lambo style="--x: 600; --rotY: 10;"></vr-lambo>
-      <vr-object>
-    </vr-camera>
-  </vr-scene>
+
+  <div id="container"><!-- fullscreen with vrdisplay is being applied to this element rather than vr-scene -->
+    <vr-scene class="scene">
+      <vr-camera class="camera">
+        <vr-object class="pivot" style="--z: 2000">
+          <vr-object class="label" style="--x: -600">
+            <iframe src="http://en.wikipedia.org/wiki/Bugatti_Veyron" width="100%" height="100%">
+              <p>Your browser does not support iframes.</p>
+            </iframe>
+
+            <!-- this element is not displaying in stereo.  so the wrapping web component elements is the cause. -->
+            <div style="position: absolute; top: 0px; left: 0px; width: 300px; height: 300px; background: green; transform-style: preserve-3d; transform: translate3d(0,0,-1000px)"></div>
+          </vr-object>
+          <vr-lambo style="--x: 600; --rotY: 10;"></vr-lambo>
+        <vr-object>
+      </vr-camera>
+    </vr-scene>
+
+    <div style="position: absolute; top: 0px; left: 0px; width: 300px; height: 300px; background: red; transform-style: preserve-3d; transform: translate3d(0,0,-1000px)"></div>
+  </div>
+  <button id="fs">Fullscreen</button>
   <script src="js/main.js"></script>
   <script src="../lib/vendor/three.js"></script>
   <script src="js/type.js"></script>
