@@ -4,50 +4,41 @@
   <meta charset="utf-8">
   <title>VR HUD Layout</title>
   <meta name="description" content="Demo for VR HUD layout">
-  <style>
-  html, body {
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
-  }
-
-  body {
-    background-image:
-    radial-gradient(
-        #0B6790,
-        #14364A
-      );
-  }
-  </style>
+  <link rel="stylesheet" type="text/css" href="style/main.css" />
 </head>
 
 <body>
   <vr-scene class="scene">
-    <vr-camera class="camera" style="--z: 500">
+    <vr-camera class="camera">
       <vr-object class="pivot">
-        <vr-axis-gl></vr-axis-gl>
-        <vr-axis-dom></vr-axis-dom>
+        <vr-object class="hud-button" style="--z: 400"><span>WebVR</span></vr-object>
       </vr-object>
     </vr-camera>
   </vr-scene>
   <script src="js/main.js"></script>
-  <script src="../lib/vendor/three.js"></script>
-  <script src="js/type.js"></script>
-  <script src="js/ajax.js"></script>
-  <script src="js/shader.js"></script>
-  <script src="js/shaderLoader.js"></script>
-  <script src="js/improvedNoise.js"></script>
-  <script src="js/noise.js"></script>
-  <script src="js/terrain-textures.js"></script>
-  <script src="js/terrain.js"></script>
   <script src="../lib/vendor/dat.gui.js"></script>
   <script src="../lib/vendor/tween.min.js"></script>
+  <script src="../lib/vendor/three.js"></script>
   <script src="../build/vr-components.js"></script>
   <script>
     var scene = document.querySelector("vr-scene");
-    var camera = document.querySelector('.pivot');
+    var buttons = document.querySelectorAll(".hud-button");
+    var selectedButton;
+    for (var i=0; i < buttons.length; ++i) {
+      buttons[i].onclick = function(button) {
+        for (var i = 0; i < buttons.length; ++i) {
+          buttons[i].classList.remove('selected');
+        }
+        button.currentTarget.classList.add('selected');
+        selectedButton = button.currentTarget;
+        xObj.x = parseInt(selectedButton.style.getPropertyValue('--x')) || 0;
+        yObj.y = parseInt(selectedButton.style.getPropertyValue('--y')) || 0;
+      }
+    }
+    var hud = document.querySelector(".hud");
+    var pivot = document.querySelector(".pivot");
     var distObj = {
-      distance: 0,
+      distance: 400,
     };
     var latObj = {
       lat: 0,
@@ -56,15 +47,38 @@
       long: 0,
     };
     var gui = new dat.GUI();
-    var distance = gui.add(distObj, 'distance', 0, 5000);
-    distance.onChange(function(value) {
-      camera.style.setProperty('--z', value);
+    var radius = gui.add(distObj, 'distance', 0, 5000);
+    var lat = gui.add(latObj, 'lat', -180, 180).step(0.01);
+    var long = gui.add(longObj, 'long', -180, 180).step(0.01);
+    radius.onChange(function(value) {
+      hud.style.setProperty('--z', value);
     });
-    distance.setValue(camera.style.getPropertyValue('--z'));
-    var x = parseInt(camera.style.getPropertyValue('--x')) || 0;
-    var z = parseInt(camera.style.getPropertyValue('--z')) || 0;
-    var rotX = parseInt(camera.style.getPropertyValue('--rotX')) || 0;
-    var rotY = parseInt(camera.style.getPropertyValue('--rotY')) || 0;
+    lat.onChange(function(value) {
+      pivot.style.setProperty('--rotY', value);
+    });
+    long.onChange(function(value) {
+      pivot.style.setProperty('--rotX', value);
+    });
+    var xObj = {
+      x: 0,
+    };
+    var yObj = {
+      y: 0,
+    };
+    var x = gui.add(xObj, 'x', -500, 500);
+    var y = gui.add(yObj, 'y', -500, 500);
+    x.onChange(function(value) {
+      selectedButton.style.setProperty('--x', value);
+    });
+    y.onChange(function(value) {
+      selectedButton.style.setProperty('--y', value);
+    });
+
+    var camera = document.querySelector('.camera');
+    var x = 0;
+    var z = 0;
+    var rotX = 0;
+    var rotY = 0;
     var lastMouseX;
     var lastMouseY;
     var rotationEnabled;
@@ -73,6 +87,10 @@
     // key events
     window.addEventListener('keydown', function(event) {
       keys[event.keyCode] = true;
+      keys[event.keyCode] = true;
+      if (event.keyCode === 70) {
+        scene.startVR();
+      }
     }, false);
 
     window.addEventListener('keyup', function(event) {
@@ -82,7 +100,6 @@
     window.requestAnimationFrame(updatePositions);
 
     function updatePositions() {
-
       var delta = 10;
       if (keys[65]) { // Left
         x += delta;
@@ -115,7 +132,9 @@
         camera.style.setProperty('--rotX', rotY * smooth);
         camera.style.setProperty('--rotY', rotX * smooth);
 
-        distance.setValue(400);
+        radius.setValue(400);
+        lat.setValue(0);
+        long.setValue(0);
       }
       camera.style.setProperty('--rotX', rotY);
       camera.style.setProperty('--rotY', rotX);
@@ -135,8 +154,8 @@
       if (!rotationEnabled) {
         return;
       }
-      var deltaX = event.clientX - lastMouseX;
-      var deltaY = event.clientY - lastMouseY;
+      var deltaX = (event.clientX - lastMouseX) * 0.25;
+      var deltaY = (event.clientY - lastMouseY) * 0.25;
       rotX += deltaX;
       rotY += deltaY;
       lastMouseX = event.clientX;
