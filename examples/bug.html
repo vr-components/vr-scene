@@ -47,18 +47,6 @@
       long: 0,
     };
     var gui = new dat.GUI();
-    var radius = gui.add(distObj, 'distance', 0, 5000);
-    var lat = gui.add(latObj, 'lat', -180, 180).step(0.01);
-    var long = gui.add(longObj, 'long', -180, 180).step(0.01);
-    radius.onChange(function(value) {
-      hud.style.setProperty('--z', value);
-    });
-    lat.onChange(function(value) {
-      pivot.style.setProperty('--rotY', value);
-    });
-    long.onChange(function(value) {
-      pivot.style.setProperty('--rotX', value);
-    });
     var xObj = {
       x: 0,
     };
