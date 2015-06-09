@@ -22,6 +22,7 @@ gulp.task('build', function() {
     'lib/gaia-component.js',
     'src/vr-scene.js',
     'src/vr-object.js',
+    'src/vr-div.js',
     'src/vr-camera.js',
     'src/vr-model.js',
     'src/vr-billboard.js',

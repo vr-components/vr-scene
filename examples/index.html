@@ -5,13 +5,20 @@
   <title>VR HUD Layout</title>
   <meta name="description" content="Demo for VR HUD layout">
   <link rel="stylesheet" type="text/css" href="style/main.css" />
+  <style>
+  #fs {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+  }
+  </style>
 </head>
 
 <body>
   <vr-scene class="scene">
     <vr-camera class="camera">
       <vr-object class="pivot">
-        <vr-object class="hud" style="--z: 400">
+        <vr-object class="hud" style="--z: 600">
           <vr-object class="hud-button" style="--x: -200">
             <div>
               <h1>Hello, camera<h1>
@@ -24,10 +31,12 @@
       </vr-object>
     </vr-camera>
   </vr-scene>
+  <button id="fs">Fullscreen</button>
   <script src="js/main.js"></script>
   <script src="../lib/vendor/dat.gui.js"></script>
   <script src="../lib/vendor/tween.min.js"></script>
   <script src="../lib/vendor/three.js"></script>
+  <script src="../lib/vendor/VREffect.js"></script>
   <script src="../build/vr-components.js"></script>
   <script>
     var scene = document.querySelector("vr-scene");
@@ -46,6 +55,7 @@
     }
     var hud = document.querySelector(".hud");
     var pivot = document.querySelector(".pivot");
+    var camera = document.querySelector('.camera');
     var distObj = {
       distance: 400,
     };
@@ -83,7 +93,6 @@
       selectedButton.style.setProperty('--y', value);
     });
 
-    var camera = document.querySelector('.camera');
     var x = 0;
     var z = 0;
     var rotX = 0;
@@ -166,6 +175,28 @@
       lastMouseX = event.clientX;
       lastMouseY = event.clientY;
     }, true);
+
+
+    var vrDevices = {};
+
+    function start() {
+      var fsButton = document.querySelector('#fs');
+      var container = document.querySelector('vr-scene');
+
+      fsButton.addEventListener('click', function() {
+        container.mozRequestFullScreen({ vrDisplay: vrDevices.headset });
+      })
+
+      window.addEventListener('resize', function(e) {
+        console.log('window Height = container Height', window.innerHeight == container.offsetHeight)
+      })
+    }
+
+    navigator.getVRDevices().then(function(devices) {
+      vrDevices.headset = devices[0];
+      vrDevices.position = devices[1];
+      start();
+    });
 
   </script>
 </body>
