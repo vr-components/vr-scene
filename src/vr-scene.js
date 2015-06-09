@@ -101,7 +101,7 @@ module.exports = component.register('vr-scene', {
     var perspectiveMatrix = this.perspectiveMatrix(THREE.Math.degToRad(45), this.offsetWidth / this.offsetHeight, 1, 10000);
     var scaled = perspectiveMatrix.clone().scale(new THREE.Vector3(this.offsetWidth, this.offsetHeight, 1));
     var style = this.cameraProjectionTransform = this.getCSSMatrix(scaled);
-    viewport.style.transform = style;
+    this.viewporTransform = style;
 
     // WebGL camera
     var camera = this.camera = new THREE.PerspectiveCamera(45, this.offsetWidth / this.offsetHeight, 1, 10000);
@@ -195,11 +195,12 @@ module.exports = component.register('vr-scene', {
     var orientation = this.vrControls.state.orientation;
     var orientationMatrix;
     var quaternion;
-    this.viewport.style.transform = this.viewporTransform;
     if (orientation) {
       quaternion = new THREE.Quaternion(orientation.x, -orientation.y, orientation.z, orientation.w);
       orientationMatrix = new THREE.Matrix4().makeRotationFromQuaternion(quaternion);
       this.viewport.style.transform = this.viewporTransform + ' ' + this.getCSSMatrix(orientationMatrix);
+    } else {
+      this.viewport.style.transform = this.viewporTransform;
     }
     renderer.render(this.scene, this.camera);
   },
