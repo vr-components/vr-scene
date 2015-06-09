@@ -21,23 +21,9 @@ module.exports = component.register('vr-object', {
   extends: HTMLDivElement.prototype,
 
   created: function() {
-    var onfullscreenchange = this.onfullscreenchange.bind(this);
-    this.translation = "translate3d(-50%, -50%, 0)";
-    document.addEventListener("webkitfullscreenchange", onfullscreenchange);
-    document.addEventListener("mozfullscreenchange",    onfullscreenchange);
-    document.addEventListener("fullscreenchange",       onfullscreenchange);
     this.setupShadowRoot();
     this.findScene();
     this.scene.addObject(this);
-    this.updateTransform();
-  },
-
-  onfullscreenchange: function() {
-    if ( !document.mozFullScreenElement && !document.webkitFullScreenElement ) {
-      this.translation = "translate3d(-50%, -50%, 0)";
-    } else {
-      this.translation = "translate3d(0, 0, 0)";
-    }
     this.updateTransform();
   },
 
@@ -103,7 +89,7 @@ module.exports = component.register('vr-object', {
     var rotationX = new THREE.Matrix4().makeRotationX(rotX);
     var rotationY = new THREE.Matrix4().makeRotationY(rotY);
     var rotationZ = new THREE.Matrix4().makeRotationX(rotZ);
-    this.style.transform = this.translation + ' ' + this.getCSSMatrix(translation.multiply(rotationZ.multiply(rotationY.multiply(rotationX))));
+    this.style.transform = "translate3d(-50%, -50%, 0) " + this.getCSSMatrix(translation.multiply(rotationZ.multiply(rotationY.multiply(rotationX))));
     this.object3D.position.set(x, -y, -z);
     this.object3D.rotation.order = 'YXZ';
     this.object3D.rotation.set(-rotX, rotY, rotZ);

@@ -54,10 +54,10 @@ body {
 
 .hud-button {
   color: white;
-  width: 120px;
-  height: 120px;
+  width: 250px;
+  height: 250px;
   background-color: #0480D1;
-  font-size: 6pt;
+  font-size: 24pt;
   padding: 15px;
 }
 
@@ -78,11 +78,10 @@ body {
 
 .hud-button span {
   position: absolute;
-  width: 50px;
-  height: 10px;
+  width: 120px;
+  height: 20px;
   top: calc(50% - 10px);
-  left: calc(50% - 25px);
-  font-size: 12pt;
+  left: calc(50% - 60px);
 }
 
 .hud-button.selected {

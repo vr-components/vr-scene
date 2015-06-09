@@ -18,15 +18,15 @@
   <vr-scene class="scene">
     <vr-camera class="camera">
       <vr-object class="pivot">
-        <vr-object class="hud" style="--z: 600">
-          <vr-object class="hud-button" style="--x: -200">
+        <vr-object class="hud" style="--z: 1000">
+          <vr-object class="hud-button" style="--x: -350">
             <div>
-              <h1>Hello, camera<h1>
+              <h3>Hello, camera</h3>
               <p>The Brown Lazy Fox...</p>
             </div>
           </vr-object>
-          <vr-object class="hud-button"><span>WebVR</span></vr-object>
-          <vr-model class="hud-cube" style="--x: 200"></vr-model>
+         <vr-object class="hud-button"><span>Web VR</span></vr-object>
+         <vr-model class="hud-cube" style="--x: 350"></vr-model>
         </vr-object>
       </vr-object>
     </vr-camera>
@@ -36,6 +36,7 @@
   <script src="../lib/vendor/dat.gui.js"></script>
   <script src="../lib/vendor/tween.min.js"></script>
   <script src="../lib/vendor/three.js"></script>
+  <script src="../lib/vendor/VRControls.js"></script>
   <script src="../lib/vendor/VREffect.js"></script>
   <script src="../build/vr-components.js"></script>
   <script>
@@ -146,9 +147,10 @@
         camera.style.setProperty('--rotX', rotY * smooth);
         camera.style.setProperty('--rotY', rotX * smooth);
 
-        radius.setValue(400);
+        radius.setValue(1000);
         lat.setValue(0);
         long.setValue(0);
+        scene.resetSensor();
       }
       camera.style.setProperty('--rotX', rotY);
       camera.style.setProperty('--rotY', rotX);

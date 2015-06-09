@@ -37,11 +37,13 @@ module.exports = component.register('vr-scene', {
 
   onfullscreenchange: function() {
     if ( !document.mozFullScreenElement && !document.webkitFullScreenElement ) {
-      this.viewport.style.transform = this.cameraProjectionTransform;
+      this.viewporTransform = this.cameraProjectionTransform;
       this.vrMode = false;
+      this.vrEffect.scale = 1;
     } else {
       this.vrMode = true;
-      this.viewport.style.transform = "translate3d(-50%, -50%, 0px)";
+      this.viewporTransform = "translate3d(-50%, -50%, 0px)";
+      this.vrEffect.scale = 2500;
     }
     this.resizeCanvas();
   },
@@ -96,13 +98,15 @@ module.exports = component.register('vr-scene', {
     var viewport = this.viewport = this.shadowRoot.querySelector('.viewport');
 
     // DOM camera
-    var perspectiveMatrix = this.perspectiveMatrix(THREE.Math.degToRad(45), this.offsetWidth / this.offsetHeight, 1, 50000);
+    var perspectiveMatrix = this.perspectiveMatrix(THREE.Math.degToRad(45), this.offsetWidth / this.offsetHeight, 1, 10000);
     var scaled = perspectiveMatrix.clone().scale(new THREE.Vector3(this.offsetWidth, this.offsetHeight, 1));
     var style = this.cameraProjectionTransform = this.getCSSMatrix(scaled);
     viewport.style.transform = style;
 
     // WebGL camera
-    this.camera = new THREE.PerspectiveCamera(45, this.offsetWidth / this.offsetHeight, 1, 50000);
+    var camera = this.camera = new THREE.PerspectiveCamera(45, this.offsetWidth / this.offsetHeight, 1, 10000);
+    this.vrControls = new THREE.VRControls( camera );
+
   },
 
   perspectiveMatrix: function(fov, aspect, nearz, farz) {
@@ -136,6 +140,7 @@ module.exports = component.register('vr-scene', {
     window.addEventListener('resize', this.resizeCanvas.bind(this), false);
 
     var renderer = this.renderer = new THREE.WebGLRenderer( { canvas: canvas, antialias: true, alpha: true } );
+    renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( this.canvas.width, this.canvas.height );
     renderer.sortObjects = false;
     this.vrEffect = new THREE.VREffect(renderer);
@@ -181,16 +186,21 @@ module.exports = component.register('vr-scene', {
       this.renderer.setSize( canvas.width, canvas.height );
     }
 
-    if (this.vrEffect) {
-      // notify vreffect of the size change
-      this.vrEffect.setSize( canvas.width, canvas.height );
-    }
-
   },
 
   animate: function() {
     var renderer = this.vrMode? this.vrEffect : this.renderer;
     this.updateChildren();
+    this.vrControls.update();
+    var orientation = this.vrControls.state.orientation;
+    var orientationMatrix;
+    var quaternion;
+    this.viewport.style.transform = this.viewporTransform;
+    if (orientation) {
+      quaternion = new THREE.Quaternion(orientation.x, -orientation.y, orientation.z, orientation.w);
+      orientationMatrix = new THREE.Matrix4().makeRotationFromQuaternion(quaternion);
+      this.viewport.style.transform = this.viewporTransform + ' ' + this.getCSSMatrix(orientationMatrix);
+    }
     renderer.render(this.scene, this.camera);
   },
 
@@ -253,6 +263,12 @@ module.exports = component.register('vr-scene', {
     this.mozRequestFullScreen({
       vrDisplay: this.vr.headset
     });
+  },
+
+  resetSensor: function() {
+    if (this.vr.position) {
+      this.vr.position.resetSensor();
+    }
   },
 
   template: `

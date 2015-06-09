@@ -27,7 +27,7 @@ module.exports = component.register('vr-model', {
 
   setupScene: function() {
     var material = new THREE.MeshLambertMaterial({ color: 'magenta' });
-    var model = this.model = new THREE.Mesh(new THREE.BoxGeometry(120, 120, 120), material);
+    var model = this.model = new THREE.Mesh(new THREE.BoxGeometry(250, 250, 250), material);
     var x = this.style.getPropertyValue('--x') || 0;
     var y = this.style.getPropertyValue('--y') || 0;
     var z = this.style.getPropertyValue('--z');
