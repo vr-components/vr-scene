@@ -20,11 +20,10 @@ gulp.task('build', function() {
   return gulp.src([
     'lib/vendor/BinaryLoader.js',
     'lib/gaia-component.js',
-    'src/vr-scene.js',
-    'src/vr-object.js',
-    'src/vr-div.js',
-    'src/vr-camera.js',
-    'src/vr-model.js',
+    'src/core/vr-scene.js',
+    'src/core/vr-object.js',
+    'src/core/vr-camera.js',
+    'src/core/vr-model.js',
     'src/vr-billboard.js',
     'src/vr-terrain.js',
     'src/vr-axis-gl.js',
@@ -45,7 +44,7 @@ gulp.task('clean', function() {
 
 gulp.task('watch', function() {
   livereload.listen();
-  gulp.watch(['src/*.js', 'gulpfile.js'], ['build']);
+  gulp.watch(['src/*/*.js', 'gulpfile.js'], ['build']);
 });
 
 gulp.task('server', function() {

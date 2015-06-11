@@ -61,19 +61,13 @@ body {
   padding: 15px;
 }
 
-.pivot {
+/*.pivot {
   animation: bobble 2s infinite;
 }
-
+*/
 .hud-button:hover,  .peak-label:hover {
   background-color: yellow;
   color: #0480D1;
-}
-
-.hud-cube {
-  width: 120px;
-  height: 120px;
-  background-color: transparent;
 }
 
 .hud-button span {

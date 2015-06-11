@@ -21,10 +21,41 @@ module.exports = component.register('vr-object', {
   extends: HTMLDivElement.prototype,
 
   created: function() {
+    var dummy;
     this.setupShadowRoot();
     this.findScene();
     this.scene.addObject(this);
     this.updateTransform();
+    this.rect = {};
+    if (this.parentNode && this.parentNode.tagName === "VR-OBJECT") {
+      this.parentNode.reportSize(this);
+    }
+  },
+
+  reportSize: function(el) {
+    var elRect = el.getBoundingClientRect();
+    var rect = this.rect;
+    if (typeof rect.top === 'undefined' ||
+        elRect.top < rect.top) {
+      rect.top = elRect.top;
+    }
+    if (typeof rect.left === 'undefined' ||
+        elRect.left < rect.left) {
+      rect.left = elRect.left;
+    }
+    if (typeof rect.bottom === 'undefined' ||
+        elRect.bottom > rect.bottom) {
+      rect.bottom = elRect.bottom;
+    }
+    if (typeof rect.right === 'undefined' ||
+       elRect.right > rect.right) {
+      rect.right = elRect.right;
+    }
+    this.style.width = (rect.right - rect.left) + 'px';
+    this.style.height = (rect.bottom - rect.top) + 'px';
+    if (this.parentNode && this.parentNode.tagName === "VR-OBJECT") {
+      this.parentNode.reportSize(this);
+    }
   },
 
   attributeChanged: function(name, from, to) {
@@ -88,7 +119,7 @@ module.exports = component.register('vr-object', {
     var rotZ = THREE.Math.degToRad(orientationZ);
     var rotationX = new THREE.Matrix4().makeRotationX(rotX);
     var rotationY = new THREE.Matrix4().makeRotationY(rotY);
-    var rotationZ = new THREE.Matrix4().makeRotationX(rotZ);
+    var rotationZ = new THREE.Matrix4().makeRotationZ(rotZ);
     this.style.transform = "translate3d(-50%, -50%, 0) " + this.getCSSMatrix(translation.multiply(rotationZ.multiply(rotationY.multiply(rotationX))));
     this.object3D.position.set(x, -y, -z);
     this.object3D.rotation.order = 'YXZ';
@@ -111,6 +142,10 @@ module.exports = component.register('vr-object', {
         top: 50%;
         position: absolute;
         transform-style: preserve-3d;
+      }
+
+      .dummy {
+        display: inline-block;
       }
     </style>
   `

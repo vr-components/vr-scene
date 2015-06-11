@@ -1,59 +1,56 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>VR HUD Layout</title>
-  <meta name="description" content="Demo for VR HUD layout">
-  <link rel="stylesheet" type="text/css" href="style/main.css" />
-  <style>
-  #fs {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-  }
-  </style>
-</head>
+/* globals define */
+(function(define){'use strict';define(function(require,exports,module){
 
-<body>
-  <vr-scene class="scene">
-    <vr-camera class="camera">
-      <vr-object class="pivot">
-        <vr-object class="hud" style="--z: 1000">
-          <vr-object class="hud-button" style="--x: -350">
-            <div>
-              <h3>Hello, camera</h3>
-              <p>The Brown Lazy Fox...</p>
-            </div>
-          </vr-object>
-         <vr-object class="hud-button"><span>Web VR</span></vr-object>
-         <vr-model class="hud-cube" style="--x: 350"></vr-model>
-        </vr-object>
-      </vr-object>
-    </vr-camera>
-  </vr-scene>
-  <button id="fs">Fullscreen</button>
-  <script src="js/main.js"></script>
-  <script src="../lib/vendor/dat.gui.js"></script>
-  <script src="../lib/vendor/tween.min.js"></script>
-  <script src="../lib/vendor/three.js"></script>
-  <script src="../lib/vendor/VRControls.js"></script>
-  <script src="../lib/vendor/VREffect.js"></script>
-  <script src="../build/vr-components.js"></script>
-  <script>
+
+var loadEditor = function() {
+
+    var objects = document.querySelectorAll("vr-object");
     var scene = document.querySelector("vr-scene");
-    var buttons = document.querySelectorAll(".hud-button");
-    var selectedButton;
-    for (var i=0; i < buttons.length; ++i) {
-      buttons[i].onclick = function(button) {
-        for (var i = 0; i < buttons.length; ++i) {
-          buttons[i].classList.remove('selected');
-        }
-        button.currentTarget.classList.add('selected');
-        selectedButton = button.currentTarget;
-        xObj.x = parseInt(selectedButton.style.getPropertyValue('--x')) || 0;
-        yObj.y = parseInt(selectedButton.style.getPropertyValue('--y')) || 0;
+    var selectedObject;
+    var hoveredObject;
+    var i;
+    var selectObject = function(evt) {
+      for (var i = 0; i < objects.length; ++i) {
+        objects[i].classList.remove('selected');
       }
+      selectedObject = evt.currentTarget;
+      selectedObject.classList.add('selected');
+      selectedObject.classList.remove('hover');
+      selectedObject.parentNode.classList.remove('hover-parent');
+      xObj.x = parseInt(selectedObject.style.getPropertyValue('--x')) || 0;
+      yObj.y = parseInt(selectedObject.style.getPropertyValue('--y')) || 0;
+      evt.stopPropagation();
+    };
+
+    var mouseEntered = function(evt) {
+      var el = evt.currentTarget;
+      evt.stopPropagation();
+      if (hoveredObject) {
+        hoveredObject.classList.remove('hover');
+        hoveredObject.parentNode.classList.remove('hover-parent');
+      }
+      if (el === selectedObject) {
+        return;
+      }
+      hoveredObject = el;
+      el.classList.add('hover');
+      el.parentNode.classList.add('hover-parent');
+    };
+
+    var mouseLeft = function(evt) {
+      var el = evt.currentTarget;
+      hoveredObject = null;
+      el.classList.remove('hover');
+      el.parentNode.classList.remove('hover-parent');
+      evt.stopPropagation();
+    };
+
+    for (i=0; i < objects.length; ++i) {
+      objects[i].addEventListener('click', selectObject);
+      objects[i].addEventListener('mouseover', mouseEntered);
+      objects[i].addEventListener('mouseout', mouseLeft);
     }
+
     var hud = document.querySelector(".hud");
     var pivot = document.querySelector(".pivot");
     var camera = document.querySelector('.camera');
@@ -80,18 +77,46 @@
       pivot.style.setProperty('--rotX', value);
     });
     var xObj = {
-      x: 0,
+      x: 0
     };
     var yObj = {
-      y: 0,
+      y: 0
+    };
+    var zObj = {
+      z: 0
+    };
+    var rotXObj = {
+      rotX: 0
+    };
+    var rotYObj = {
+      rotY: 0
+    };
+    var rotZObj = {
+      rotZ: 0
     };
     var x = gui.add(xObj, 'x', -500, 500);
     var y = gui.add(yObj, 'y', -500, 500);
+    var z = gui.add(zObj, 'z', -500, 500);
+    var rotX = gui.add(rotXObj, 'rotX', -180, 180);
+    var rotY = gui.add(rotYObj, 'rotY', -180, 180);
+    var rotZ = gui.add(rotZObj, 'rotZ', -180, 180);
     x.onChange(function(value) {
-      selectedButton.style.setProperty('--x', value);
+      selectedObject.style.setProperty('--x', value);
     });
     y.onChange(function(value) {
-      selectedButton.style.setProperty('--y', value);
+      selectedObject.style.setProperty('--y', value);
+    });
+    z.onChange(function(value) {
+      selectedObject.style.setProperty('--z', value);
+    });
+    rotX.onChange(function(value) {
+      selectedObject.style.setProperty('--rotX', value);
+    });
+    rotY.onChange(function(value) {
+      selectedObject.style.setProperty('--rotY', value);
+    });
+    rotZ.onChange(function(value) {
+      selectedObject.style.setProperty('--rotZ', value);
     });
 
     var x = 0;
@@ -178,27 +203,11 @@
       lastMouseY = event.clientY;
     }, true);
 
-    var vrDevices = {};
+}
 
-    function start() {
-      var fsButton = document.querySelector('#fs');
-      var container = document.querySelector('vr-scene');
+window.addEventListener('load', loadEditor, false);
 
-      fsButton.addEventListener('click', function() {
-        container.mozRequestFullScreen({ vrDisplay: vrDevices.headset });
-      })
-
-      window.addEventListener('resize', function(e) {
-        console.log('window Height = container Height', window.innerHeight == container.offsetHeight)
-      })
-    }
-
-    navigator.getVRDevices().then(function(devices) {
-      vrDevices.headset = devices[0];
-      vrDevices.position = devices[1];
-      start();
-    });
-
-  </script>
-</body>
-</html>
+});})(typeof define=='function'&&define.amd?define
+:(function(n,w){'use strict';return typeof module=='object'?function(c){
+c(require,exports,module);}:function(c){var m={exports:{}};c(function(n){
+return w[n];},m.exports,m);w[n]=m.exports;};})('VRModel',this));

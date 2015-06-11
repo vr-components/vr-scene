@@ -1,0 +1,60 @@
+html, body {
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-image:
+  radial-gradient(
+      #0B6790,
+      #14364A
+    );
+}
+
+.hud-element {
+  background-color: white;
+  border: 5px solid black;
+  font-size: 16pt;
+  padding: 20px;
+}
+
+.hud-button {
+  width: 150px;
+  height: 150px;
+}
+
+.hud-button h1 {
+  color: black;
+  margin: 0;
+  padding: 0;
+}
+
+.hud-button h2 {
+  color: gray;
+  margin: 0;
+  padding: 0;
+}
+
+.hud-url {
+  width: 820px;
+  height: 40px;
+  padding: 15px;
+  line-height: 40px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 24pt;
+}
+
+.selected {
+  border: 5px solid yellow;
+}
+
+.hover {
+  border: 5px solid magenta;
+}
+
+.hover-parent {
+  border: 5px dotted magenta;
+}
+

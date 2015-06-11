@@ -21,15 +21,19 @@ module.exports = component.register('vr-scene', {
   extends: HTMLDivElement.prototype,
 
   created: function() {
+    this.setupEventHandlers();
+    this.setupShadowRoot();
+    this.setupRenderer();
+    this.setupScene();
+    this.setupCamera();
+  },
+
+  setupEventHandlers: function() {
     var processDevices = this.processDevices.bind(this);
     var onfullscreenchange = this.onfullscreenchange.bind(this);
     document.addEventListener("webkitfullscreenchange", onfullscreenchange);
     document.addEventListener("mozfullscreenchange",    onfullscreenchange);
     document.addEventListener("fullscreenchange",       onfullscreenchange);
-    this.setupShadowRoot();
-    this.setupRenderer();
-    this.setupScene();
-    this.setupCamera();
     this.getVRDevices().then(processDevices)['catch'](function (err) {
       console.warn(err);
     });
