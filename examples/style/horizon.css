@@ -12,6 +12,32 @@ body {
     );
 }
 
+button {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  color: white;
+  background-color: #303030;
+  border: 1px solid white;
+  padding: 5px;
+  width: 90px;
+}
+
+button:hover {
+  color: #303030;
+  background-color: white;
+}
+
+.vr-button {
+  top: 20px;
+  left: 30px;
+}
+
+.source-button {
+  top: 20px;
+  left: 140px;
+}
+
 .hud-element {
   background-color: white;
   border: 5px solid black;
@@ -55,6 +81,41 @@ body {
 }
 
 .hover-parent {
-  border: 5px dotted magenta;
+  border: 5px dotted #45BC9F;
 }
 
+.label {
+  position: absolute;
+  width: 90px;
+  height: 30px;
+  background-color: black;
+  border: 4px solid #2C2C2C;
+  top: 0;
+  left: 0;
+  line-height: 30px;
+  color: white;
+  text-align: center;
+  display: none;
+}
+
+.CodeMirror {
+  position: absolute !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1;
+  padding: 10px;
+  top: 50px;
+}
+
+.source {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background-color: #272822;
+  opacity: 0.9;
+}
+
+.source-controls {
+  height: 50px;
+}

@@ -5,15 +5,9 @@
   <title>HORIZON HUD</title>
   <meta name="description" content="Demo of Horizon HUD using Web Components">
   <link rel="stylesheet" type="text/css" href="style/horizon.css" />
-  <style>
-  #fs {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-  }
-  </style>
+  <link rel="stylesheet" href="js/lib/codemirror/codemirror.css">
+  <link rel="stylesheet" href="js/lib/codemirror/theme/monokai.css">
 </head>
-
 
 <!-- HUD -->
 <!-- <div id="hud" class="hud threed">
@@ -118,7 +112,17 @@
       </vr-object>
     </vr-camera>
   </vr-scene>
-  <button id="fs">Fullscreen</button>
+  <button class="vr-button">Enter VR</button>
+  <button class="source-button view-source">View Source</button>
+  <div class="source">
+    <div class="source-controls">
+      <button class="vr-button">Enter VR</button>
+      <button class="source-button close-source">Close Source</button>
+    </div>
+  </div>
+  <script src="js/lib/codemirror/codemirror.js"></script>
+  <script src="js/lib/codemirror/mode/javascript.js"></script>
+
   <script src="../lib/vendor/dat.gui.js"></script>
   <script src="../lib/vendor/three.js"></script>
   <script src="../lib/vendor/VRControls.js"></script>
@@ -127,19 +131,61 @@
   <script src="../build/vr-components.js"></script>
   <script>
     var vrDevices = {};
+    var container = document.querySelector('vr-scene');
 
     function start() {
-      var fsButton = document.querySelector('#fs');
-      var container = document.querySelector('vr-scene');
+      var sourcePanel = document.querySelector('.source');
+      var fsButtons = document.querySelectorAll('.vr-button');
+      var i;
+      for(i=0; i<fsButtons.length; ++i) {
+        fsButtons[i].addEventListener('click', function() {
+          container.mozRequestFullScreen({ vrDisplay: vrDevices.headset });
+        });
+      }
 
-      fsButton.addEventListener('click', function() {
-        container.mozRequestFullScreen({ vrDisplay: vrDevices.headset });
-      })
+      var sourceButtons = document.querySelectorAll('.source-button');
+      sourcePanel.style.display = 'none';
+      for(i=0; i<sourceButtons.length; ++i) {
+        sourceButtons[i].addEventListener('click', function(evt) {
+          var close = evt.currentTarget.classList.contains('close-source');
+          var source;
+          if (close) {
+            sourcePanel.style.display = 'none';
+          } else {
+            sourcePanel.style.display = '';
+            source = container.innerHTML
+              .replace(/transform: translate3d\(-50%, -50%, 0px\)\ /g,'') // transforms set by scene
+              .replace(/matrix3d\(([-+]?(\d+), )+[-+]?(\d+)\);/g,'') // matrix styles set by scene
+              .replace(/width: (\d+)[.]?(\d+)px; /g,'') // width styles set by scene
+              .replace(/ height: (\d+)[.]?(\d+)px;/g,'')  // height styles set by scene
+              .replace(/<style scoped="">([\S\s]*?)<\/style>/g,'') // scoped styles
+              .replace(/style=""/g,''); // remaining empty style attrbitutes
+
+            codemirror.setValue( source );
+          }
+        });
+      }
 
       window.addEventListener('resize', function(e) {
         console.log('window Height = container Height', window.innerHeight == container.offsetHeight)
       })
     }
+
+    var codemirror = CodeMirror(document.querySelector('.source'), {
+      value: 'function update( event ) {}',
+      lineNumbers: true,
+      matchBrackets: true,
+      indentWithTabs: true,
+      tabSize: 2,
+      indentUnit: 2,
+      mode: "javascript"
+    });
+    codemirror.setOption('theme', 'monokai');
+
+    codemirror.on('change', function() {
+      var source = codemirror.getValue();
+      container.innerHTML = source;
+    });
 
     navigator.getVRDevices().then(function(devices) {
       vrDevices.headset = devices[0];

@@ -51,8 +51,8 @@ module.exports = component.register('vr-object', {
        elRect.right > rect.right) {
       rect.right = elRect.right;
     }
-    this.style.width = (rect.right - rect.left) + 'px';
-    this.style.height = (rect.bottom - rect.top) + 'px';
+    this.style.width = (rect.right - rect.left) + 10 + 'px';
+    this.style.height = (rect.bottom - rect.top) + 10 + 'px';
     if (this.parentNode && this.parentNode.tagName === "VR-OBJECT") {
       this.parentNode.reportSize(this);
     }
