@@ -26,35 +26,58 @@ module.exports = component.register('vr-object', {
     this.findScene();
     this.scene.addObject(this);
     this.updateTransform();
-    this.rect = {};
-    if (this.parentNode && this.parentNode.tagName === "VR-OBJECT") {
-      this.parentNode.reportSize(this);
-    }
+    //this.reportSize();
   },
 
-  reportSize: function(el) {
-    var elRect = el.getBoundingClientRect();
-    var rect = this.rect;
-    if (typeof rect.top === 'undefined' ||
-        elRect.top < rect.top) {
-      rect.top = elRect.top;
+  getChildren: function() {
+    var children = this.childNodes;
+    var objs = [];
+    var i;
+    var child;
+    for (i=0; i<children.length; ++i) {
+      child = children[i];
+      if (child.tagName === "VR-OBJECT") {
+        objs.push(child);
+      }
     }
-    if (typeof rect.left === 'undefined' ||
-        elRect.left < rect.left) {
-      rect.left = elRect.left;
+    return objs;
+  },
+
+  updateSize: function() {
+    var elRect;
+    var children = this.getChildren();
+    var rect = {};
+    var i;
+    for (i = 0; i < children.length; ++i) {
+      elRect = children[i].getBoundingClientRect();
+      if (typeof rect.top === 'undefined' ||
+          elRect.top < rect.top) {
+        rect.top = elRect.top;
+      }
+      if (typeof rect.left === 'undefined' ||
+          elRect.left < rect.left) {
+        rect.left = elRect.left;
+      }
+      if (typeof rect.bottom === 'undefined' ||
+          elRect.bottom > rect.bottom) {
+        rect.bottom = elRect.bottom;
+      }
+      if (typeof rect.right === 'undefined' ||
+         elRect.right > rect.right) {
+        rect.right = elRect.right;
+      }
     }
-    if (typeof rect.bottom === 'undefined' ||
-        elRect.bottom > rect.bottom) {
-      rect.bottom = elRect.bottom;
-    }
-    if (typeof rect.right === 'undefined' ||
-       elRect.right > rect.right) {
-      rect.right = elRect.right;
-    }
-    this.style.width = (rect.right - rect.left) + 10 + 'px';
-    this.style.height = (rect.bottom - rect.top) + 10 + 'px';
+    this.style.top = rect.top;
+    this.style.left = rect.left;
+    this.style.width = (rect.right - rect.left) + 'px';
+    this.style.height = (rect.bottom - rect.top) + 'px';
+    //this.reportSize();
+    return rect;
+  },
+
+  reportSize: function() {
     if (this.parentNode && this.parentNode.tagName === "VR-OBJECT") {
-      this.parentNode.reportSize(this);
+      this.parentNode.updateSize();
     }
   },
 
@@ -103,6 +126,7 @@ module.exports = component.register('vr-object', {
   },
 
   updateTransform: function() {
+    var previousPosition = this.previousPosition = this.previousPosition || {};
     // Position
     var x = this.style.getPropertyValue('--x') || 0;
     var y = this.style.getPropertyValue('--y') || 0;
@@ -124,6 +148,19 @@ module.exports = component.register('vr-object', {
     this.object3D.position.set(x, -y, -z);
     this.object3D.rotation.order = 'YXZ';
     this.object3D.rotation.set(-rotX, rotY, rotZ);
+
+    // Report position? Only if changed
+    // if (x !== previousPosition.x ||
+    //     y !== previousPosition.y ||
+    //     z !== previousPosition.z ) {
+    //   debugger;
+    //   this.reportSize();
+    //   this.previousPosition = {
+    //     x: x,
+    //     y: y,
+    //     z: z
+    //   };
+    // }
   },
 
   findScene: function() {

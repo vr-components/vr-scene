@@ -119,3 +119,7 @@ button:hover {
 .source-controls {
   height: 50px;
 }
+
+.line-highlight {
+  background: #14364A;
+}

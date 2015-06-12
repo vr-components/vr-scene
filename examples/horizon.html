@@ -121,6 +121,7 @@
     </div>
   </div>
   <script src="js/lib/codemirror/codemirror.js"></script>
+  <script src="js/lib/codemirror/addon/searchcursor.js"></script>
   <script src="js/lib/codemirror/mode/javascript.js"></script>
 
   <script src="../lib/vendor/dat.gui.js"></script>
@@ -143,25 +144,33 @@
         });
       }
 
+      var source;
       var sourceButtons = document.querySelectorAll('.source-button');
       sourcePanel.style.display = 'none';
       for(i=0; i<sourceButtons.length; ++i) {
         sourceButtons[i].addEventListener('click', function(evt) {
           var close = evt.currentTarget.classList.contains('close-source');
-          var source;
+          //var source;
           if (close) {
             sourcePanel.style.display = 'none';
+            VREditor.enableAnimation(true);
           } else {
+            VREditor.enableAnimation(false);
             sourcePanel.style.display = '';
             source = container.innerHTML
               .replace(/transform: translate3d\(-50%, -50%, 0px\)\ /g,'') // transforms set by scene
-              .replace(/matrix3d\(([-+]?(\d+), )+[-+]?(\d+)\);/g,'') // matrix styles set by scene
+              .replace(/matrix3d\(([-+]?(\d+)(\.\d+)?, )+[-+]?(\d+)(\.\d+)?\);/g,'') // matrix styles set by scene
               .replace(/width: (\d+)[.]?(\d+)px; /g,'') // width styles set by scene
               .replace(/ height: (\d+)[.]?(\d+)px;/g,'')  // height styles set by scene
               .replace(/<style scoped="">([\S\s]*?)<\/style>/g,'') // scoped styles
-              .replace(/style=""/g,''); // remaining empty style attrbitutes
-
+              .replace(/style=""/g,'') // remaining empty style attrbitutes
+              .replace(/:(\s+)/g,': ');
             codemirror.setValue( source );
+            var cursor = codemirror.getSearchCursor("selected");
+            if (cursor.findNext()) {
+              debugger;
+              codemirror.addLineClass(cursor.pos.from.line, 'background', 'line-highlight');
+            }
           }
         });
       }
@@ -172,10 +181,10 @@
     }
 
     var codemirror = CodeMirror(document.querySelector('.source'), {
-      value: 'function update( event ) {}',
       lineNumbers: true,
       matchBrackets: true,
       indentWithTabs: true,
+      lineWrapping: true,
       tabSize: 2,
       indentUnit: 2,
       mode: "javascript"
@@ -185,12 +194,19 @@
     codemirror.on('change', function() {
       var source = codemirror.getValue();
       container.innerHTML = source;
+      VREditor.reset();
     });
 
     navigator.getVRDevices().then(function(devices) {
       vrDevices.headset = devices[0];
       vrDevices.position = devices[1];
       start();
+    });
+
+    document.addEventListener('copy', function(e) {
+        var source = codemirror.getValue();
+        e.clipboardData.setData('text/plain', textToPutOnClipboard);
+        e.preventDefault();
     });
   </script>
 </body>

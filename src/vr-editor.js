@@ -6,12 +6,13 @@ var pivot;
 var objects;
 var scene;
 var camera;
+var animationEnabled = true;
 
-var labelHoveredParent = document.createElement('div');
+//var labelHoveredParent = document.createElement('div');
 var labelHovered = document.createElement('div');
 var selectedObject;
 var hoveredObject;
-labelHoveredParent.classList.add('label');
+//labelHoveredParent.classList.add('label');
 labelHovered.classList.add('label');
 
 var selectObject = function(evt) {
@@ -21,29 +22,32 @@ var selectObject = function(evt) {
   selectedObject = evt.currentTarget;
   selectedObject.classList.add('selected');
   selectedObject.classList.remove('hover');
-  selectedObject.parentNode.classList.remove('hover-parent');
+  //selectedObject.parentNode.classList.remove('hover-parent');
   setUI(selectedObject);
   evt.stopPropagation();
 };
 
 var ui = {};
 
-var setUI = function() {
-  ui.x.setValue(parseInt(selectedObject.style.getPropertyValue('--x')) || 0);
-  ui.y.setValue(parseInt(selectedObject.style.getPropertyValue('--y')) || 0);
-  ui.z.setValue(parseInt(selectedObject.style.getPropertyValue('--y')) || 0);
-  ui.rotX.setValue(parseInt(selectedObject.style.getPropertyValue('--rotX')) || 0);
-  ui.rotY.setValue(parseInt(selectedObject.style.getPropertyValue('--rotY')) || 0);
-  ui.rotZ.setValue(parseInt(selectedObject.style.getPropertyValue('--rotZ')) || 0);
+var setUI = function(el) {
+  var x = el? parseInt(el.style.getPropertyValue('--x')) || 0 : 0;
+  var y = el? parseInt(el.style.getPropertyValue('--y')) || 0 : 0;
+  var z = el? parseInt(el.style.getPropertyValue('--z')) || 0 : 0;
+  var rotX = el? parseInt(el.style.getPropertyValue('--rotX')) || 0 : 0;
+  var rotY = el? parseInt(el.style.getPropertyValue('--rotY')) || 0 : 0;
+  var rotZ = el? parseInt(el.style.getPropertyValue('--rotZ')) || 0 : 0;
+
+  ui.x.setValue(x);
+  ui.y.setValue(y);
+  ui.z.setValue(z);
+  ui.rotX.setValue(rotX);
+  ui.rotY.setValue(rotY);
+  ui.rotZ.setValue(rotZ);
 };
 
-var resetUI = function() {
-  ui.x.setValue(0);
-  ui.y.setValue(0);
-  ui.z.setValue(0);
-  ui.rotX.setValue(0);
-  ui.rotY.setValue(0);
-  ui.rotZ.setValue(0);
+var reset = function() {
+  selectedObject = document.querySelector('.selected');
+  setUI(selectedObject);
   hud = document.querySelector(".hud");
   pivot = document.querySelector(".pivot");
   camera = document.querySelector('.camera');
@@ -78,28 +82,34 @@ var initUI = function() {
     pivot.style.setProperty('--rotX', value);
   });
 
-  var x = ui.x = gui.add(uiObj, 'x', -500, 500);
-  var y = ui.y = gui.add(uiObj, 'y', -500, 500);
-  var z = ui.z = gui.add(uiObj, 'z', -500, 500);
+  var x = ui.x = gui.add(uiObj, 'x', -1000, 1000);
+  var y = ui.y = gui.add(uiObj, 'y', -1000, 1000);
+  var z = ui.z = gui.add(uiObj, 'z', -1000, 1000);
   var rotX = ui.rotX = gui.add(uiObj, 'rotX', -180, 180);
   var rotY = ui.rotY = gui.add(uiObj, 'rotY', -180, 180);
   var rotZ = ui.rotZ =  gui.add(uiObj, 'rotZ', -180, 180);
   x.onChange(function(value) {
+    if (!selectedObject) { return; }
     selectedObject.style.setProperty('--x', value);
   });
   y.onChange(function(value) {
+    if (!selectedObject) { return; };
     selectedObject.style.setProperty('--y', value);
   });
   z.onChange(function(value) {
+    if (!selectedObject) { return; };
     selectedObject.style.setProperty('--z', value);
   });
   rotX.onChange(function(value) {
+    if (!selectedObject) { return; };
     selectedObject.style.setProperty('--rotX', value);
   });
   rotY.onChange(function(value) {
+    if (!selectedObject) { return; };
     selectedObject.style.setProperty('--rotY', value);
   });
   rotZ.onChange(function(value) {
+    if (!selectedObject) { return; };
     selectedObject.style.setProperty('--rotZ', value);
   });
 };
@@ -107,22 +117,22 @@ var initUI = function() {
 var mouseEntered = function(evt) {
   var el = evt.currentTarget;
   var elRect = el.getBoundingClientRect();
-  var parentRect = el.parentNode.getBoundingClientRect();
+  //var parentRect = el.parentNode.getBoundingClientRect();
   evt.stopPropagation();
   if (hoveredObject) {
     hoveredObject.classList.remove('hover');
-    hoveredObject.parentNode.classList.remove('hover-parent');
+    //hoveredObject.parentNode.classList.remove('hover-parent');
   }
   hoveredObject = el;
-  el.parentNode.classList.add('hover-parent');
+  //el.parentNode.classList.add('hover-parent');
   labelHovered.style.top = elRect.top + 'px';
   labelHovered.style.left = elRect.left + 'px';
   labelHovered.innerHTML = el.classList.item(0);
   labelHovered.style.display = 'block';
-  labelHoveredParent.style.top = parentRect.top + 'px';
-  labelHoveredParent.style.left = parentRect.left + 'px';
-  labelHoveredParent.innerHTML = el.parentNode.classList.item(0);
-  labelHoveredParent.style.display = 'block';
+  //labelHoveredParent.style.top = parentRect.top + 'px';
+  //labelHoveredParent.style.left = parentRect.left + 'px';
+  //labelHoveredParent.innerHTML = el.parentNode.classList.item(0);
+  //labelHoveredParent.style.display = 'block';
   if (el === selectedObject) {
     return;
   }
@@ -133,9 +143,9 @@ var mouseLeft = function(evt) {
   var el = evt.currentTarget;
   hoveredObject = null;
   el.classList.remove('hover');
-  el.parentNode.classList.remove('hover-parent');
+  //el.parentNode.classList.remove('hover-parent');
   labelHovered.style.display = 'none';
-  labelHoveredParent.style.display = 'none';
+  //labelHoveredParent.style.display = 'none';
   evt.stopPropagation();
 };
 
@@ -150,11 +160,11 @@ var attachEventListeners = function() {
 
 var attachMouseKeyboardListeners = function() {
 
-  var x = 0;
-  var y = 0;
-  var z = 0;
-  var rotX = 0;
-  var rotY = 0;
+  var x = parseInt(camera.style.getPropertyValue('--x')) || 0;
+  var y = parseInt(camera.style.getPropertyValue('--y')) || 0;
+  var z = parseInt(camera.style.getPropertyValue('--z')) || 0;
+  var rotX = parseInt(camera.style.getPropertyValue('--rotY')) || 0;
+  var rotY = parseInt(camera.style.getPropertyValue('--rotX')) || 0;
   var lastMouseX;
   var lastMouseY;
   var rotationEnabled;
@@ -173,6 +183,12 @@ var attachMouseKeyboardListeners = function() {
 
   function updatePositions() {
     var delta = 10;
+
+    if (!animationEnabled) {
+      window.requestAnimationFrame(updatePositions);
+      return;
+    }
+
     if (keys[65]) { // Left
       x += delta;
       camera.style.setProperty('--x', x);
@@ -243,14 +259,21 @@ var loadEditor = function() {
     camera = document.querySelector('.camera');
     objects = document.querySelectorAll("vr-object");
     scene = document.querySelector("vr-scene");
-    document.body.appendChild(labelHoveredParent);
+    //document.body.appendChild(labelHoveredParent);
     document.body.appendChild(labelHovered);
     attachEventListeners();
     attachMouseKeyboardListeners();
     initUI();
 };
 
+var enableAnimation = function(enabled) {
+  animationEnabled = enabled;
+}
+
 window.addEventListener('load', loadEditor, false);
+
+exports.reset = reset;
+exports.enableAnimation = enableAnimation;
 
 });})(typeof define=='function'&&define.amd?define
 :(function(n,w){'use strict';return typeof module=='object'?function(c){
