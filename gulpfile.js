@@ -28,7 +28,8 @@ gulp.task('build', function() {
     'src/vr-terrain.js',
     'src/vr-axis-gl.js',
     'src/vr-axis-dom.js',
-    'src/vr-lambo.js'
+    'src/vr-lambo.js',
+    'src/vr-hud.js'
     ])
     .pipe(gulpif(debug, sourcemaps.init()))
     .pipe(gulpif(production, uglify()))
@@ -44,7 +45,7 @@ gulp.task('clean', function() {
 
 gulp.task('watch', function() {
   livereload.listen();
-  gulp.watch(['src/*/*.js', 'gulpfile.js'], ['build']);
+  gulp.watch(['src/*.js','src/*/*.js', 'gulpfile.js'], ['build']);
 });
 
 gulp.task('server', function() {

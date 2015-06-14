@@ -21,7 +21,6 @@ module.exports = component.register('vr-object', {
   extends: HTMLDivElement.prototype,
 
   created: function() {
-    var dummy;
     this.setupShadowRoot();
     this.findScene();
     this.scene.addObject(this);
@@ -128,15 +127,15 @@ module.exports = component.register('vr-object', {
   updateTransform: function() {
     var previousPosition = this.previousPosition = this.previousPosition || {};
     // Position
-    var x = this.style.getPropertyValue('--x') || 0;
-    var y = this.style.getPropertyValue('--y') || 0;
-    var z = this.style.getPropertyValue('--z') || 0;
+    var x = parseFloat(this.style.getPropertyValue('--x')) || 0;
+    var y = parseFloat(this.style.getPropertyValue('--y')) || 0;
+    var z = parseFloat(this.style.getPropertyValue('--z')) || 0;
     var translation = new THREE.Matrix4().makeTranslation(x, y, -z);
 
     // Orientation
-    var orientationX = this.style.getPropertyValue('--rotX') || 0;
-    var orientationY = this.style.getPropertyValue('--rotY') || 0;
-    var orientationZ = this.style.getPropertyValue('--rotZ') || 0;
+    var orientationX = parseFloat(this.style.getPropertyValue('--rotX')) || 0;
+    var orientationY = parseFloat(this.style.getPropertyValue('--rotY')) || 0;
+    var orientationZ = parseFloat(this.style.getPropertyValue('--rotZ')) || 0;
 
     var rotX = THREE.Math.degToRad(orientationX);
     var rotY = THREE.Math.degToRad(orientationY);
@@ -179,10 +178,6 @@ module.exports = component.register('vr-object', {
         top: 50%;
         position: absolute;
         transform-style: preserve-3d;
-      }
-
-      .dummy {
-        display: inline-block;
       }
     </style>
   `

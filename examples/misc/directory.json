@@ -1,0 +1,77 @@
+{
+  "template": "index.html",
+  "sites": [
+    {
+      "description": "A visualization of British Columbia's coast built with three.js and Cinema 4D.",
+      "icon": "http://mozvr.com/projects/sechelt/project-thumb.png",
+      "name": "Sechelt",
+      "tagline": "Fly Through",
+      "type": "Full-VR WebGL",
+      "url": "http://mozvr.github.io/sechelt/"
+    },
+    {
+      "description": "A documentary by DEEP that takes users to the Arctic in 360° VR video, powered by eleVR’s WebGL VR video player.",
+      "icon": "http://mozvr.com/projects/polarsea/project-thumb.png",
+      "name": "Polar Sea",
+      "tagline": "Video",
+      "type": "Full-VR WebGL",
+      "url": "http://mozvr.com/projects/polarsea/content/"
+    },
+    {
+      "description": "A weird and wonderful visualization of seamlessly-linked primates.",
+      "icon": "http://mozvr.com/projects/monkeys/project-thumb.png",
+      "name": "Monkeys",
+      "tagline": "Visualization",
+      "type": "Full-VR WebGL",
+      "url": "http://monkeys.hypernom.com/"
+    },
+    {
+      "description": "",
+      "icon": "",
+      "name": "Blue Box",
+      "tagline": "Test",
+      "type": "Full-VR CSS",
+      "url": "http://mozvr.github.io/cssvr-experiments/20150505/bluebox.html"
+    },
+    {
+      "description": "",
+      "icon": "",
+      "name": "'Abandoned' Cube Map",
+      "tagline": "Test",
+      "type": "Full-VR CSS",
+      "url": "http://mozvr.github.io/cssvr-experiments/20150505-02/cubemap.html"
+    },
+    {
+      "description": "",
+      "icon": "",
+      "name": "Vimeo Player",
+      "tagline": "Test",
+      "type": "Full-VR CSS",
+      "url": "http://mozvr.github.io/cssvr-experiments/20150516/webm.html"
+    },
+    {
+      "description": "",
+      "icon": "",
+      "name": "Tridiv NES Model",
+      "tagline": "Test",
+      "type": "Full-VR CSS",
+      "url": "http://mozvr.github.io/cssvr-experiments/20150520/tridiv.html"
+    },
+    {
+      "description": "Site of the MozVR team",
+      "icon": "",
+      "name": "MozVR.com",
+      "tagline": "Site",
+      "type": "Classic",
+      "url": "http://mozvr.com"
+    },
+    {
+      "description": "Heavy site with lots of content",
+      "icon": "",
+      "name": "CNN.com",
+      "tagline": "Site",
+      "type": "Classic",
+      "url": "http://cnn.com"
+    }
+  ]
+}

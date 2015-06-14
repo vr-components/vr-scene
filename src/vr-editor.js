@@ -7,6 +7,7 @@ var objects;
 var scene;
 var camera;
 var animationEnabled = true;
+var el;
 
 //var labelHoveredParent = document.createElement('div');
 var labelHovered = document.createElement('div');
@@ -158,6 +159,7 @@ var attachEventListeners = function() {
   }
 }
 
+var animationFrameID;
 var attachMouseKeyboardListeners = function() {
 
   var x = parseInt(camera.style.getPropertyValue('--x')) || 0;
@@ -179,13 +181,13 @@ var attachMouseKeyboardListeners = function() {
     keys[event.keyCode] = false;
   }, false);
 
+  window.cancelAnimationFrame(animationFrameID);
   window.requestAnimationFrame(updatePositions);
 
   function updatePositions() {
     var delta = 10;
-
     if (!animationEnabled) {
-      window.requestAnimationFrame(updatePositions);
+      animationFrameID = window.requestAnimationFrame(updatePositions);
       return;
     }
 
@@ -228,7 +230,7 @@ var attachMouseKeyboardListeners = function() {
     camera.style.setProperty('--rotX', rotY);
     camera.style.setProperty('--rotY', rotX);
     scene.animate();
-    window.requestAnimationFrame(updatePositions);
+    animationFrameID = window.requestAnimationFrame(updatePositions);
   }
 
   scene.addEventListener('mousedown', function(event) {
@@ -253,6 +255,21 @@ var attachMouseKeyboardListeners = function() {
 
 };
 
+var template = `
+  <div class="source">
+    <div class="source-controls">
+        <button class="vr-button">Enter VR</button>
+        <button class="source-button close-source">Close Source</button>
+    </div>
+  </div>`;
+var t = document.createElement('template');
+t.innerHTML = template;
+var el = document.importNode(t.content, true);
+document.body.appendChild(el);
+var sourcePanel = document.querySelector('.source');
+sourcePanel.style.display = 'none';
+
+var source;
 var loadEditor = function() {
     hud = document.querySelector(".hud");
     pivot = document.querySelector(".pivot");
@@ -268,12 +285,58 @@ var loadEditor = function() {
 
 var enableAnimation = function(enabled) {
   animationEnabled = enabled;
-}
+};
 
 window.addEventListener('load', loadEditor, false);
 
+var scene = document.querySelector('vr-scene');
+var codemirror = CodeMirror(document.querySelector('.source'), {
+  lineNumbers: true,
+  matchBrackets: true,
+  indentWithTabs: true,
+  lineWrapping: true,
+  tabSize: 2,
+  indentUnit: 2,
+  mode: "javascript"
+});
+codemirror.setOption('theme', 'monokai');
+
+codemirror.on('change', function() {
+  var source = codemirror.getValue();
+  scene.innerHTML = source;
+  VREditor.reset();
+});
+
+var openSource = function() {
+  enableAnimation(false);
+  sourcePanel.style.display = '';
+  source = container.innerHTML
+    .replace(/transform: translate3d\(-50%, -50%, 0px\)\ /g,'') // transforms set by scene
+    .replace(/matrix3d\(([-+]?(\d+)(\.\d+)?, )+[-+]?(\d+)(\.\d+)?\);/g,'') // matrix styles set by scene
+    .replace(/width: (\d+)[.]?(\d+)px; /g,'') // width styles set by scene
+    .replace(/ height: (\d+)[.]?(\d+)px;/g,'')  // height styles set by scene
+    .replace(/<style scoped="">([\S\s]*?)<\/style>/g,'') // scoped styles
+    .replace(/style=""/g,'') // remaining empty style attrbitutes
+    .replace(/:(\s+)/g,': ');
+  codemirror.setValue( source );
+  var cursor = codemirror.getSearchCursor("selected");
+  if (cursor.findNext()) {
+    codemirror.addLineClass(cursor.pos.from.line, 'background', 'line-highlight');
+  }
+};
+
+var closeSource = function() {
+  sourcePanel.style.display = 'none';
+  enableAnimation(true);
+};
+
+var closeSourceEl = document.querySelector('.close-source');
+closeSourceEl.addEventListener('click', closeSource);
+
 exports.reset = reset;
 exports.enableAnimation = enableAnimation;
+exports.openSource = openSource;
+exports.closeSource = closeSource;
 
 });})(typeof define=='function'&&define.amd?define
 :(function(n,w){'use strict';return typeof module=='object'?function(c){

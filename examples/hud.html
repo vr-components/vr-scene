@@ -45,13 +45,75 @@
 <body>
   <vr-scene class="scene">
     <vr-camera class="camera">
-      <vr-hud class="hud" style="--z: 1000"></vr-hud>
+      <vr-object class="pivot">
+        <vr-object class="hud" style="--z: 1000">
+          <vr-object class="links" style="--y: -50">
+            <vr-object class="row1" style="--y: -110">
+              <vr-object class="hud-element hud-button" style="--x: -440">
+                <div>
+                  <h1>Title</h1>
+                  <h2>Subtitle</h2>
+                </div>
+              </vr-object>
+              <vr-object class="hud-element hud-button" style="--x: -220">
+                <div>
+                  <h1>Title</h1>
+                  <h2>Subtitle</h2>
+                </div>
+              </vr-object>
+              <vr-object class="hud-element hud-button">
+                <div>
+                  <h1>Title</h1>
+                  <h2>Subtitle</h2>
+                </div>
+              </vr-object>
+              <vr-object class="hud-element hud-button" style="--x: 220">
+                <div>
+                  <h1>Title</h1>
+                  <h2>Subtitle</h2>
+                </div>
+              </vr-object>
+              <vr-object class="hud-element hud-button" style="--x: 440">
+                <div>
+                  <h1>Title</h1>
+                  <h2>Subtitle</h2>
+                </div>
+              </vr-object>
+            </vr-object>
+            <vr-object class="row2" style="--y: 110">
+              <vr-object class="hud-element hud-button" style="--x: -330">
+                <div>
+                  <h1>Title</h1>
+                  <h2>Subtitle</h2>
+                </div>
+              </vr-object>
+              <vr-object class="hud-element hud-button" style="--x: -110">
+                <div>
+                  <h1>Title</h1>
+                  <h2>Subtitle</h2>
+                </div>
+              </vr-object>
+              <vr-object class="hud-element hud-button" style="--x: 110">
+                <div>
+                  <h1>Title</h1>
+                  <h2>Subtitle</h2>
+                </div>
+              </vr-object>
+              <vr-object class="hud-element hud-button" style="--x: 330">
+                <div>
+                  <h1>Title</h1>
+                  <h2>Subtitle</h2>
+                </div>
+              </vr-object>
+            </vr-object>
+          </vr-object>
+          <vr-object class="hud-element hud-url" style="--y: 220">www.mozilla.com</vr-object>
+        </vr-object>
+      </vr-object>
     </vr-camera>
   </vr-scene>
   <button class="vr-button">Enter VR</button>
   <button class="source-button view-source">View Source</button>
-  <script src="js/type.js"></script>
-  <script src="js/ajax.js"></script>
   <script src="js/lib/codemirror/codemirror.js"></script>
   <script src="js/lib/codemirror/addon/searchcursor.js"></script>
   <script src="js/lib/codemirror/mode/javascript.js"></script>
@@ -86,12 +148,6 @@
       vrDevices.position = devices[1];
       start();
     });
-
-    var hud = document.querySelector('vr-hud');
-    var loadLinks = function(links) {
-      hud.loadLinks(links.sites);
-    };
-    ajax.get('misc/directory.json', loadLinks);
   </script>
 </body>
 </html>
