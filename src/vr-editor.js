@@ -167,6 +167,7 @@ var attachMouseKeyboardListeners = function() {
   var z = parseInt(camera.style.getPropertyValue('--z')) || 0;
   var rotX = parseInt(camera.style.getPropertyValue('--rotY')) || 0;
   var rotY = parseInt(camera.style.getPropertyValue('--rotX')) || 0;
+  var rotZ = parseInt(camera.style.getPropertyValue('--rotZ')) || 0;
   var lastMouseX;
   var lastMouseY;
   var rotationEnabled;
@@ -221,6 +222,7 @@ var attachMouseKeyboardListeners = function() {
 
       camera.style.setProperty('--rotX', rotY * smooth);
       camera.style.setProperty('--rotY', rotX * smooth);
+      camera.style.setProperty('--rotZ', rotZ);
 
       ui.radius.setValue(1000);
       ui.lat.setValue(0);
@@ -229,6 +231,7 @@ var attachMouseKeyboardListeners = function() {
     }
     camera.style.setProperty('--rotX', rotY);
     camera.style.setProperty('--rotY', rotX);
+    camera.style.setProperty('--rotZ', rotZ);
     scene.animate();
     animationFrameID = window.requestAnimationFrame(updatePositions);
   }
@@ -317,7 +320,12 @@ var openSource = function() {
     .replace(/ height: (\d+)[.]?(\d+)px;/g,'')  // height styles set by scene
     .replace(/<style scoped="">([\S\s]*?)<\/style>/g,'') // scoped styles
     .replace(/style=""/g,'') // remaining empty style attrbitutes
-    .replace(/:(\s+)/g,': ');
+    .replace(/:(\s+)/g,': ')
+    .replace(/"\s+/g, '"') // Removes extra spaces after "
+    .replace(/\s+"/g, '"') // Removes trailing spaces before "
+    .replace(/--rot[XYZ]: 0;/g, '') // removes 0 rotations
+    .replace(/--[xyz]: 0;/g, '') // removes 0 translations
+    .replace(/style="\s+"/g, '') // removes empty style attributes
   codemirror.setValue( source );
   var cursor = codemirror.getSearchCursor("selected");
   if (cursor.findNext()) {

@@ -23,21 +23,22 @@ module.exports = component.register('vr-camera', {
   updateTransform: function() {
     var elStyles = window.getComputedStyle(this);
     // Position
-    var x = elStyles.getPropertyValue('--x') || 0;
-    var y = elStyles.getPropertyValue('--y') || 0;
-    var z = elStyles.getPropertyValue('--z') || 0;
+    var x = parseFloat(this.style.getPropertyValue('--x')) || 0;
+    var y = parseFloat(this.style.getPropertyValue('--y')) || 0;
+    var z = parseFloat(this.style.getPropertyValue('--z')) || 0;
     var translation = new THREE.Matrix4().makeTranslation(x, y, -z);
 
     // Orientation
-    var orientationX = elStyles.getPropertyValue('--rotX') || 0;
-    var orientationY = elStyles.getPropertyValue('--rotY') || 0;
-    var orientationZ = elStyles.getPropertyValue('--rotZ') || 0;
+    var orientationX = parseFloat(this.style.getPropertyValue('--rotX')) || 0;
+    var orientationY = parseFloat(this.style.getPropertyValue('--rotY')) || 0;
+    var orientationZ = parseFloat(this.style.getPropertyValue('--rotZ')) || 0;
+
     var rotX = THREE.Math.degToRad(orientationX);
     var rotY = THREE.Math.degToRad(orientationY);
     var rotZ = THREE.Math.degToRad(orientationZ);
     var rotationX = new THREE.Matrix4().makeRotationX(rotX);
     var rotationY = new THREE.Matrix4().makeRotationY(rotY);
-    var rotationZ = new THREE.Matrix4().makeRotationX(rotZ);
+    var rotationZ = new THREE.Matrix4().makeRotationZ(rotZ);
     var matrixCSS = rotationZ.multiply(rotationY.multiply(rotationX.multiply(translation)));
 
     this.style.transform = 'translate3d(-50%, -50%, 0) ' + this.getCSSMatrix(matrixCSS);
