@@ -187,6 +187,7 @@ var attachMouseKeyboardListeners = function() {
 
   function updatePositions() {
     var delta = 10;
+
     if (!animationEnabled) {
       animationFrameID = window.requestAnimationFrame(updatePositions);
       return;
@@ -321,12 +322,15 @@ var openSource = function() {
     .replace(/<style scoped="">([\S\s]*?)<\/style>/g,'') // scoped styles
     .replace(/style=""/g,'') // remaining empty style attrbitutes
     .replace(/:(\s+)/g,': ')
-    .replace(/"\s+/g, '"') // Removes extra spaces after "
-    .replace(/\s+"/g, '"') // Removes trailing spaces before "
     .replace(/--rot[XYZ]: 0;/g, '') // removes 0 rotations
     .replace(/--[xyz]: 0;/g, '') // removes 0 translations
     .replace(/style="\s+"/g, '') // removes empty style attributes
+    .replace(/"\s+/g, '"') // Removes extra spaces after "
+    .replace(/\s+"/g, '"'); // Removes trailing spaces before "
   codemirror.setValue( source );
+  // auto format
+  // var totalLines = codemirror.lineCount();
+  // codemirror.autoFormatRange({line:0, ch:0}, {line:totalLines});
   var cursor = codemirror.getSearchCursor("selected");
   if (cursor.findNext()) {
     codemirror.addLineClass(cursor.pos.from.line, 'background', 'line-highlight');

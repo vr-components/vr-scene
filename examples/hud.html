@@ -133,6 +133,7 @@
       var i;
       for(i=0; i<fsButtons.length; ++i) {
         fsButtons[i].addEventListener('click', function() {
+          VREditor.closeSource();
           container.mozRequestFullScreen({ vrDisplay: vrDevices.headset });
         });
       }
