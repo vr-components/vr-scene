@@ -29,7 +29,8 @@ gulp.task('build', function() {
     'src/vr-axis-gl.js',
     'src/vr-axis-dom.js',
     'src/vr-lambo.js',
-    'src/vr-hud.js'
+    'src/vr-hud.js',
+    'src/vr-webview.js'
     ])
     .pipe(gulpif(debug, sourcemaps.init()))
     .pipe(gulpif(production, uglify()))

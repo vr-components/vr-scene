@@ -45,7 +45,11 @@
 <body>
   <vr-scene class="scene">
     <vr-camera class="camera">
-      <vr-hud class="hud" style="--z: 1000"></vr-hud>
+      <vr-object class="pivot" style="--z: 2000">
+
+<!--       <vr-webview class="webview" style="--z: 2000"></vr-webview>
+ -->      <vr-hud class="hud"></vr-hud>
+      </vr-object>
     </vr-camera>
   </vr-scene>
   <button class="vr-button">Enter VR</button>
@@ -55,22 +59,29 @@
   <script src="js/lib/codemirror/codemirror.js"></script>
   <script src="js/lib/codemirror/addon/searchcursor.js"></script>
   <script src="js/lib/codemirror/mode/javascript.js"></script>
+  <script src="js/lib/codemirror/mode/xml/xml.js"></script>
+  <script src="js/lib/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+  <script src="js/lib/codemirror/formatting.js"></script>
 
   <script src="../lib/vendor/dat.gui.js"></script>
   <script src="../lib/vendor/three.js"></script>
   <script src="../lib/vendor/VRControls.js"></script>
   <script src="../lib/vendor/VREffect.js"></script>
+  <script src="../lib/vendor/keyboard.js"></script>
   <script src="../src/vr-editor.js"></script>
   <script src="../build/vr-components.js"></script>
   <script>
     var vrDevices = {};
     var container = document.querySelector('vr-scene');
+    var hud = document.querySelector('.hud');
+    var webview = document.querySelector('.webview');
 
     function start() {
       var fsButtons = document.querySelectorAll('.vr-button');
       var i;
       for(i=0; i<fsButtons.length; ++i) {
         fsButtons[i].addEventListener('click', function() {
+          VREditor.closeSource();
           container.mozRequestFullScreen({ vrDisplay: vrDevices.headset });
         });
       }
@@ -79,6 +90,14 @@
       window.addEventListener('resize', function(e) {
         console.log('window Height = container Height', window.innerHeight == container.offsetHeight)
       })
+      hud.addEventListener('click', function(evt) {
+        if (evt.detail.url) {
+          //webview.loadURL(evt.detail.url);
+          //webview.show();
+          hud.hide();
+          hudOpen = false;
+        }
+      });
     }
 
     navigator.getVRDevices().then(function(devices) {
@@ -87,11 +106,21 @@
       start();
     });
 
-    var hud = document.querySelector('vr-hud');
-    var loadLinks = function(links) {
-      hud.loadLinks(links.sites);
-    };
-    ajax.get('misc/directory.json', loadLinks);
+    var hudOpen = false;
+    hud.hide();
+    //webview.show();
+    //webview.loadURL('http://mozvr.com/posts/quick-vr-prototypes/');
+
+    KeyboardJS.on('space', function() {
+      if (hudOpen) {
+        hud.hide();
+        //webview.show();
+      } else {
+        hud.show();
+        //webview.hide();
+      }
+      hudOpen = !hudOpen;
+    });
   </script>
 </body>
 </html>

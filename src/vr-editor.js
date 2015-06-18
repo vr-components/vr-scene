@@ -160,6 +160,7 @@ var attachEventListeners = function() {
 }
 
 var animationFrameID;
+var runningAnimation = false;
 var attachMouseKeyboardListeners = function() {
 
   var x = parseInt(camera.style.getPropertyValue('--x')) || 0;
@@ -182,14 +183,15 @@ var attachMouseKeyboardListeners = function() {
     keys[event.keyCode] = false;
   }, false);
 
-  window.cancelAnimationFrame(animationFrameID);
-  window.requestAnimationFrame(updatePositions);
+  if (!runningAnimation) {
+    runningAnimation = true;
+    window.requestAnimationFrame(updatePositions);
+  }
 
   function updatePositions() {
     var delta = 10;
-
     if (!animationEnabled) {
-      animationFrameID = window.requestAnimationFrame(updatePositions);
+      window.requestAnimationFrame(updatePositions);
       return;
     }
 
@@ -301,7 +303,7 @@ var codemirror = CodeMirror(document.querySelector('.source'), {
   lineWrapping: true,
   tabSize: 2,
   indentUnit: 2,
-  mode: "javascript"
+  mode: "text/html"
 });
 codemirror.setOption('theme', 'monokai');
 
@@ -329,8 +331,9 @@ var openSource = function() {
     .replace(/\s+"/g, '"'); // Removes trailing spaces before "
   codemirror.setValue( source );
   // auto format
-  // var totalLines = codemirror.lineCount();
-  // codemirror.autoFormatRange({line:0, ch:0}, {line:totalLines});
+  var totalLines = codemirror.lineCount();
+  codemirror.autoFormatRange({line:0, ch:0}, {line:totalLines});
+  codemirror.setCursor(0);
   var cursor = codemirror.getSearchCursor("selected");
   if (cursor.findNext()) {
     codemirror.addLineClass(cursor.pos.from.line, 'background', 'line-highlight');

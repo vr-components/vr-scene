@@ -124,18 +124,35 @@ module.exports = component.register('vr-object', {
     ')';
   },
 
+  // If not defined these variables DO NOT
+  // cascade from the parent
+  notPropagatingVariables: {
+    "--x": true,
+    "--y": true,
+    "--z": true,
+    "--rotX": true,
+    "--rotY": true,
+    "--rotZ": true
+  },
+
+  getPropertyValue: function(property) {
+    var style = this.notPropagatingVariables[property]?
+      this.style : window.getComputedStyle(this);
+    return style.getPropertyValue(property);
+  },
+
   updateTransform: function() {
     var previousPosition = this.previousPosition = this.previousPosition || {};
     // Position
-    var x = parseFloat(this.style.getPropertyValue('--x')) || 0;
-    var y = parseFloat(this.style.getPropertyValue('--y')) || 0;
-    var z = parseFloat(this.style.getPropertyValue('--z')) || 0;
+    var x = parseFloat(this.getPropertyValue('--x')) || 0;
+    var y = parseFloat(this.getPropertyValue('--y')) || 0;
+    var z = parseFloat(this.getPropertyValue('--z')) || 0;
     var translation = new THREE.Matrix4().makeTranslation(x, y, -z);
 
     // Orientation
-    var orientationX = parseFloat(this.style.getPropertyValue('--rotX')) || 0;
-    var orientationY = parseFloat(this.style.getPropertyValue('--rotY')) || 0;
-    var orientationZ = parseFloat(this.style.getPropertyValue('--rotZ')) || 0;
+    var orientationX = parseFloat(this.getPropertyValue('--rotX')) || 0;
+    var orientationY = parseFloat(this.getPropertyValue('--rotY')) || 0;
+    var orientationZ = parseFloat(this.getPropertyValue('--rotZ')) || 0;
 
     var rotX = THREE.Math.degToRad(orientationX);
     var rotY = THREE.Math.degToRad(orientationY);

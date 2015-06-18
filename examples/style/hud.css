@@ -1,35 +1,15 @@
-/**
- * Variables
- */
-
-:root {
-  /* default depth to place interface */
-  --hud-depth: 2500;
-
-  /* hud */
-  --hud-width: 58cm;
-  /* default content dimensions */
-  --content-width: 32cm;
-  --content-height: 26cm;
-
-  /* default depth to mono iframe content */
-  --content-depth-hud-close: 100;
-  --content-depth-hud-open: -100;
-}
-
 html, body {
   overflow: hidden;
   margin: 0;
   padding: 0;
-  font-size: 16pt;
 }
 
 body {
   background-image:
   radial-gradient(
-    #0B6790,
-    #14364A
-  );
+      #0B6790,
+      #14364A
+    );
 }
 
 button {
@@ -46,18 +26,6 @@ button {
 button:hover {
   color: #303030;
   background-color: white;
-}
-
-.hud {
-  width: var(--hud-width);
-  --z: var(--hud-depth);
-  --data-url: url('misc/directory.json');
-}
-
-.webview {
-  --z: var(--hud-depth);
-  height: var(--content-height);
-  width: var(--content-width);
 }
 
 .vr-button {
@@ -130,6 +98,15 @@ button:hover {
   display: none;
 }
 
+.CodeMirror {
+  position: absolute !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1;
+  padding: 10px;
+  top: 50px;
+}
+
 .source {
   position: absolute;
   width: 100%;
@@ -140,15 +117,7 @@ button:hover {
 }
 
 .source-controls {
-  width: 100%;
   height: 50px;
-}
-
-.CodeMirror {
-  width: 100% !important;
-  height: 100% !important;
-  z-index: 1;
-  padding: 10px;
 }
 
 .line-highlight {

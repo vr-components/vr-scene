@@ -98,17 +98,19 @@ module.exports = component.register('vr-scene', {
   },
 
   setupCamera: function() {
-    var fov = this.style.getPropertyValue('--fov') || 45;
+    var fov = parseFloat(this.style.getPropertyValue('--fov')) || 45;
     var viewport = this.viewport = this.shadowRoot.querySelector('.viewport');
+    var world = this.world = this.shadowRoot.querySelector('.world');
+    this.perspective = 0.5 / Math.tan( THREE.Math.degToRad( fov * 0.5 ) ) * this.offsetHeight;
 
     // DOM camera
-    var perspectiveMatrix = this.perspectiveMatrix(THREE.Math.degToRad(45), this.offsetWidth / this.offsetHeight, 1, 10000);
+    var perspectiveMatrix = this.perspectiveMatrix(THREE.Math.degToRad(fov), this.offsetWidth / this.offsetHeight, 1, 10000);
     var scaled = perspectiveMatrix.clone().scale(new THREE.Vector3(this.offsetWidth, this.offsetHeight, 1));
     var style = this.cameraProjectionTransform = this.getCSSMatrix(scaled);
     this.viewporTransform = style;
 
     // WebGL camera
-    var camera = this.camera = new THREE.PerspectiveCamera(45, this.offsetWidth / this.offsetHeight, 1, 10000);
+    var camera = this.camera = new THREE.PerspectiveCamera(fov, this.offsetWidth / this.offsetHeight, 1, 10000);
     this.vrControls = new THREE.VRControls( camera );
 
   },
@@ -151,7 +153,7 @@ module.exports = component.register('vr-scene', {
   },
 
   setupScene: function() {
-    /// All WebGL Setup
+    // All WebGL Setup
     var scene = this.scene = new THREE.Scene();
     createLights();
     function createLights() {
@@ -205,6 +207,8 @@ module.exports = component.register('vr-scene', {
       this.viewport.style.transform = this.viewporTransform + ' ' + this.getCSSMatrix(orientationMatrix);
     } else {
       this.viewport.style.transform = this.viewporTransform;
+      //this.viewport.style.perspective = this.perspective + 'px';
+      //this.world.style.setProperty('--z', -this.perspective);
     }
     renderer.render(this.scene, this.camera);
   },
@@ -279,7 +283,7 @@ module.exports = component.register('vr-scene', {
   template: `
     <canvas width="100%" height="100%"></canvas>
     <div class="viewport">
-      <content></content>
+        <content></content>
     </div>
 
     <style>
