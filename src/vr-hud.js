@@ -37,7 +37,7 @@ module.exports = component.register('vr-hud', {
     var el;
     var h1;
     var h2;
-    for (i=0; i < links.length; ++i) {
+    for (i=0; i < 5; ++i) {
       el = document.createElement('div');
       el.classList.add('hud-element');
       el.classList.add('link');

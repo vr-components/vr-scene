@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Test Case for Z buffer bug</title>
+  <meta name="description" content="Demo for VR HUD layout">
+  <style>
+  html, body {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .threed {
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    transform-style: preserve-3d;
+  }
+
+  .viewport {
+    position: absolute;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+  }
+
+  .square {
+    width: 800px;
+    height: 500px;
+    top: calc(50% - 250px);
+    left: calc(50% - 400px);
+  }
+
+  .big {
+    width: 1600px;
+    height: 1000px;
+    top: calc(50% - 500px);
+    left: calc(50% - 800px);
+  }
+
+  .camera {
+    transform: rotateY(0deg) rotateX(0deg) translate3d(0, 0, -1000px)
+  }
+
+  .red {
+    background-color: red;
+  }
+
+  .container {
+    position: absolute;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    background-image:
+      radial-gradient(
+        #0B6790,
+        #14364A
+      );
+    transform-style: preserve-3d;
+  }
+
+  .vr-button {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+  }
+
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="viewport">
+      <div class="threed camera">
+        <div class="threed world">
+          <div class="threed square red"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="vr-button">Enter VR</button>
+  <script src="../lib/vendor/dat.gui.js"></script>
+
+  <script>
+  var degToRad = function(deg) {
+    return (deg * Math.PI) / 180;
+  };
+
+  var perspectiveMatrix = function(fov, aspect, nearz, farz) {
+    var elements = [];
+    var range = Math.tan(fov * 0.5) * nearz;
+    elements[0] = (2 * nearz) / ((range * aspect) - (-range * aspect));
+    elements[1] = 0;
+    elements[2] = 0;
+    elements[3] = 0;
+    elements[4] = 0;
+    elements[5] = (2 * nearz) / (2 * range);
+    elements[6] = 0;
+    elements[7] = 0;
+    elements[8] = 0;
+    elements[9] = 0;
+    elements[10] = -(farz + nearz) / (farz - nearz);
+    elements[11] = -(2 * farz * nearz) / (farz - nearz);
+    elements[12] = 0;
+    elements[13] = 0;
+    elements[14] = -1;
+    elements[15] = 0;
+    return elements;
+  };
+
+  var scaleMatrix = function(elements, x, y, z) {
+    var e = elements;
+    e[ 0 ] *= x; e[ 4 ] *= y; e[ 8 ] *= z;
+    e[ 1 ] *= x; e[ 5 ] *= y; e[ 9 ] *= z;
+    e[ 2 ] *= x; e[ 6 ] *= y; e[ 10 ] *= z;
+    e[ 3 ] *= x; e[ 7 ] *= y; e[ 11 ] *= z;
+    return e;
+  };
+
+  var cssMatrix = function(elements) {
+    var epsilon = function ( value ) {
+      return Math.abs( value ) < 0.000001 ? 0 : value;
+    };
+    return 'matrix3d(' +
+      epsilon( elements[ 0 ] ) + ',' +
+      epsilon( elements[ 1 ] ) + ',' +
+      epsilon( elements[ 2 ] ) + ',' +
+      epsilon( elements[ 3 ] ) + ',' +
+      epsilon( elements[ 4 ] ) + ',' +
+      epsilon( elements[ 5 ] ) + ',' +
+      epsilon( elements[ 6 ] ) + ',' +
+      epsilon( elements[ 7 ] ) + ',' +
+      epsilon( elements[ 8 ] ) + ',' +
+      epsilon( elements[ 9 ] ) + ',' +
+      epsilon( elements[ 10 ] ) + ',' +
+      epsilon( elements[ 11 ] ) + ',' +
+      epsilon( elements[ 12 ] ) + ',' +
+      epsilon( elements[ 13 ] ) + ',' +
+      epsilon( elements[ 14 ] ) + ',' +
+      epsilon( elements[ 15 ] ) +
+    ')';
+  };
+
+  var viewport = document.querySelector('.viewport');
+  var container = document.querySelector('.container');
+  var world = document.querySelector('.world');
+  var projectionMatrix = scaleMatrix(perspectiveMatrix(degToRad(45), viewport.clientWidth / viewport.clientHeight, 1, 10000), viewport.clientWidth, viewport.clientHeight, 1);
+  viewport.style.transform = cssMatrix(projectionMatrix);
+
+  // DAT GUI
+  var obj = {
+    bigSquare: true
+  };
+  var gui = new dat.GUI();
+  var bigSquare = gui.add(obj, 'bigSquare');
+  var square = document.querySelector('.square');
+
+  bigSquare.onChange(function(value) {
+    if (value) {
+      square.classList.add('big');
+    } else {
+      square.classList.remove('big');
+    }
+  });
+  bigSquare.setValue(false);
+
+  var lastMouseX;
+  var lastMouseY;
+  var rotX = 0;
+  var rotY = 0;
+  var rotationEnabled;
+  var camera = document.querySelector('.camera');
+  document.addEventListener('mousedown', function(event) {
+    rotationEnabled = true;
+    lastMouseX = event.clientX;
+    lastMouseY = event.clientY;
+  }, true);
+  document.addEventListener('mouseup', function(event) {
+    rotationEnabled = false;
+  }, true);
+  document.addEventListener('mousemove', function(event) {
+    if (!rotationEnabled) {
+      return;
+    }
+    var deltaX = (event.clientX - lastMouseX) * 0.25;
+    var deltaY = (event.clientY - lastMouseY) * 0.25;
+    rotX += deltaX;
+    rotY += deltaY;
+    lastMouseX = event.clientX;
+    lastMouseY = event.clientY;
+    camera.style.transform = 'rotateY(' + rotX + 'deg) rotateX(' + rotY + 'deg) translate3d(0, 0, -1000px)' ;
+  }, true);
+
+  function start() {
+    var fsButton = document.querySelector('.vr-button');
+    fsButton.addEventListener('click', function() {
+      container.mozRequestFullScreen({ vrDisplay: vrDevices.headset });
+    });
+  }
+
+  var vrDevices = {};
+  navigator.getVRDevices().then(function(devices) {
+    vrDevices.headset = devices[0];
+    vrDevices.position = devices[1];
+    start();
+  });
+
+  var onfullscreenchange = function() {
+    if ( !document.mozFullScreenElement && !document.webkitFullScreenElement ) {
+      viewport.style.transform = cssMatrix(projectionMatrix);
+    } else {
+      viewport.style.transform = "translate3d(-50%, -50%, 0px)";
+    }
+  };
+  document.addEventListener("mozfullscreenchange", onfullscreenchange);
+
+  </script>
+</body>
+</html>

@@ -45,10 +45,11 @@
 <body>
   <vr-scene class="scene">
     <vr-camera class="camera">
-      <vr-object class="pivot" style="--z: 2000">
-
-<!--       <vr-webview class="webview" style="--z: 2000"></vr-webview>
- -->      <vr-hud class="hud"></vr-hud>
+      <vr-object class="pivot">
+        <vr-object class="hud" style="--z: 1000">
+          <vr-hud class="hud" style="width: 800px; height: 500px;"></vr-hud>
+          <vr-object class="hud-element hud-button" style="--x: -440"></vr-object>
+        </vr-object>
       </vr-object>
     </vr-camera>
   </vr-scene>

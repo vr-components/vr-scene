@@ -52,6 +52,7 @@ button:hover {
   width: var(--hud-width);
   --z: var(--hud-depth);
   --data-url: url('misc/directory.json');
+  height: 100px;
 }
 
 .webview {
