@@ -1,0 +1,23 @@
+.sprite { background: url('sprite.png') no-repeat top left; width: 270px; height: 343px;  }
+.sprite.arm-back { background-position: 0 0; width: 202px; height: 73px; }
+.sprite.arm-bottom { background-position: 0 -83px; width: 203px; height: 34px; }
+.sprite.arm { background-position: 0 -127px; width: 232px; height: 73px; }
+.sprite.body-back { background-position: 0 -210px; }
+.sprite.body-front { background-position: 0 -563px; }
+.sprite.eyes { background-position: 0 -916px; height: 110px; }
+.sprite.body-left { background-position: 0 -1036px; }
+.sprite.body-right { background-position: 0 -1389px; }
+.sprite.finger { background-position: 0 -1742px; width: 122px; height: 58px; }
+.sprite.forearm { background-position: 0 -1810px; width: 189px; height: 31px; }
+.sprite.forearm-cap { background-position: 0 -1851px; width: 39px; height: 42px; }
+.sprite.head-big { background-position: 0 -1903px; width: 207px; height: 125px; }
+.sprite.head-front-back { background-position: 0 -2038px; width: 209px; height: 14px; }
+.sprite.head-leftright { background-position: 0 -2062px; width: 14px; height: 130px; }
+.sprite.neck-base { background-position: 0 -2202px; width: 35px; height: 42px; }
+.sprite.neck-cap { background-position: 0 -2254px; width: 47px; height: 42px; }
+.sprite.neck-high { background-position: 0 -2306px; width: 137px; height: 19px; }
+.sprite.neck-low { background-position: 0 -2335px; width: 170px; height: 37px; }
+.sprite.shoulder-cap { background-position: 0 -2382px; width: 84px; height: 82px; }
+.sprite.shoulder-left { background-position: 0 -2474px; width: 65px; height: 105px; }
+.sprite.wheel { background-position: 0 -2589px; width: 54px; height: 137px; }
+.sprite.wrist { background-position: 0 -2736px; width: 148px; height: 18px; }

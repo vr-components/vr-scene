@@ -30,7 +30,9 @@ gulp.task('build', function() {
     'src/vr-axis-dom.js',
     'src/vr-lambo.js',
     'src/vr-hud.js',
-    'src/vr-webview.js'
+    'src/vr-webview.js',
+    'src/vr-walle.js',
+    'src/vr-skybox.js'
     ])
     .pipe(gulpif(debug, sourcemaps.init()))
     .pipe(gulpif(production, uglify()))
@@ -52,7 +54,7 @@ gulp.task('watch', function() {
 gulp.task('server', function() {
   gulp.src('./')
     .pipe(webserver({
-      livereload: true,
+      livereload: false,
       directoryListing: true,
       open: "examples/index.html",
       port: 9000

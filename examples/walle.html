@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Walle vs R2D2</title>
+  <meta name="description" content="Demo for VR HUD layout">
+  <link rel="stylesheet" type="text/css" href="style/main.css" />
+  <style>
+  #fs {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+  }
+  </style>
+</head>
+
+<body>
+  <vr-scene class="scene">
+    <vr-object class="pivot">
+      <vr-object class="hud" style="--z: 1500">
+        <vr-camera class="camera">
+         <vr-walle></vr-walle>
+        </vr-camera>
+      </vr-object>
+    </vr-object>
+    <vr-skybox class="sky"></vr-skybox>
+  </vr-scene>
+  <button id="fs">Fullscreen</button>
+  <script src="js/main.js"></script>
+  <script src="../lib/vendor/dat.gui.js"></script>
+  <script src="../lib/vendor/tween.min.js"></script>
+  <script src="../lib/vendor/three.js"></script>
+
+  <script src="js/lib/threejs/shaders/SkyShader.js"></script>
+
+  <script src="../lib/vendor/VRControls.js"></script>
+  <script src="../lib/vendor/VREffect.js"></script>
+  <script src="../build/vr-components.js"></script>
+  <script>
+    var scene = document.querySelector("vr-scene");
+    var buttons = document.querySelectorAll(".hud-button");
+    var selectedButton;
+    for (var i=0; i < buttons.length; ++i) {
+      buttons[i].onclick = function(button) {
+        for (var i = 0; i < buttons.length; ++i) {
+          buttons[i].classList.remove('selected');
+        }
+        button.currentTarget.classList.add('selected');
+        selectedButton = button.currentTarget;
+        xObj.x = parseInt(selectedButton.style.getPropertyValue('--x')) || 0;
+        yObj.y = parseInt(selectedButton.style.getPropertyValue('--y')) || 0;
+      }
+    }
+    var hud = document.querySelector(".hud");
+    var pivot = document.querySelector(".pivot");
+    var camera = document.querySelector('.camera');
+    var distObj = {
+      distance: 1500,
+    };
+
+    var gui = new dat.GUI();
+    var radius = gui.add(distObj, 'distance', 0, 5000);
+
+    radius.onChange(function(value) {
+      hud.style.setProperty('--z', value);
+    });
+
+    var x = 0;
+    var z = 0;
+    var rotX = 0;
+    var rotY = 0;
+    var lastMouseX;
+    var lastMouseY;
+    var rotationEnabled;
+    var lastPress = Date.now();
+    var keys = {};
+    // key events
+    window.addEventListener('keydown', function(event) {
+      keys[event.keyCode] = true;
+    }, false);
+
+    window.addEventListener('keyup', function(event) {
+      keys[event.keyCode] = false;
+    }, false);
+
+    window.requestAnimationFrame(updatePositions);
+
+    function updatePositions() {
+      var delta = 10;
+      if (keys[65]) { // Left
+        x += delta;
+        camera.style.setProperty('--x', x);
+      }
+      if (keys[87]) { // Up
+        z -= delta;
+        camera.style.setProperty('--z', z);
+      }
+      if (keys[68]) { // Right
+        x -= delta;
+        camera.style.setProperty('--x', x);
+      }
+      if (keys[83]) { // Down
+        z += delta;
+        camera.style.setProperty('--z', z);
+      }
+
+      if (keys[90]) { // Z
+        x = 0;
+        y = 0;
+        z = 0;
+        rotX = 0;
+        rotY = 0;
+        var smooth = 0.4;
+        camera.style.setProperty('--x', x);
+        camera.style.setProperty('--y', y);
+        camera.style.setProperty('--z', z);
+
+        camera.style.setProperty('--rotX', rotY * smooth);
+        camera.style.setProperty('--rotY', rotX * smooth);
+
+        radius.setValue(1500);
+        lat.setValue(0);
+        long.setValue(0);
+        scene.resetSensor();
+      }
+      camera.style.setProperty('--rotX', rotY);
+      camera.style.setProperty('--rotY', rotX);
+      scene.animate();
+      window.requestAnimationFrame(updatePositions);
+    }
+
+    scene.addEventListener('mousedown', function(event) {
+      rotationEnabled = true;
+      lastMouseX = event.clientX;
+      lastMouseY = event.clientY;
+    }, true);
+    scene.addEventListener('mouseup', function(event) {
+      rotationEnabled = false;
+    }, true);
+    scene.addEventListener('mousemove', function(event) {
+      if (!rotationEnabled) {
+        return;
+      }
+      var deltaX = (event.clientX - lastMouseX) * 0.25;
+      var deltaY = (event.clientY - lastMouseY) * 0.25;
+      rotX += deltaX;
+      rotY += deltaY;
+      lastMouseX = event.clientX;
+      lastMouseY = event.clientY;
+    }, true);
+
+    var vrDevices = {};
+
+    function start() {
+      var fsButton = document.querySelector('#fs');
+      var container = document.querySelector('vr-scene');
+
+      fsButton.addEventListener('click', function() {
+        container.mozRequestFullScreen({ vrDisplay: vrDevices.headset });
+      })
+
+      window.addEventListener('resize', function(e) {
+        console.log('window Height = container Height', window.innerHeight == container.offsetHeight)
+      })
+    }
+
+    navigator.getVRDevices().then(function(devices) {
+      vrDevices.headset = devices[0];
+      vrDevices.position = devices[1];
+      start();
+    });
+
+  </script>
+</body>
+</html>
